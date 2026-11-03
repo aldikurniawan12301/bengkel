@@ -17,6 +17,8 @@ banner Diagnosis Cepat atau pil Ringkasan Hari Ini. Kartu daftar memakai border
 tipis, nominal warna `textTitle`, dan daftar tidak memakai FAB. Label navigasi
 sejajar; tinggi isi 60 dp. Header isi 56 dp di bawah inset status; isi layar mulai 16 dp setelah header; form dan tombol memakai radius 12 dp.
 
+**Perubahan v2.3:** navigasi bawah memakai Beranda, Transaksi/Riwayat, Diagnosis, Kasir, dan Profil. Katalog admin dibuka sebagai layar biasa dari Beranda, tindakan stok menipis, atau header Kasir. Kasir menjadi layar utama pemilihan item; pemilih produk sebagai bottom sheet tidak dipakai.
+
 **Perubahan v2.0:** paket ikon diputuskan: **Material Symbols gaya outline**
 (paket `material_symbols_icons`). Bagian 18 kini berupa tabel fungsi ke nama
 ikon yang pasti, dan semua ikon dipanggil lewat satu file `app_icons.dart`,
@@ -203,7 +205,7 @@ Nilai heksadesimal di bawah adalah **estimasi dari gambar referensi**, bukan nil
 |---|---|---|---|
 | `successSoft` | `#E3F6ED` | `success` | Latar badge Rendah, Final, Aktif, kotak status "Terhubung" |
 | `warningSoft` | `#FEF2E1` | `warning` | Latar badge Sedang, Draft, Stok Menipis, label "Perkiraan", banner peringatan |
-| `dangerSoft` | `#FCE9E9` | `danger` | Latar badge Tinggi, Habis, kotak error |
+| `warningText` | `#B54708` | Teks status Sedang/Urgensi Sedang di atas `warningSoft` |
 | `infoSoft` | `#E6ECFF` | `primary` | Sama dengan `primarySoft` |
 
 Teks dan ikon di atas latar lembut memakai warna status penuh. Token ini didefinisikan sekali di `app_colors.dart`, dilarang menghitung opasitas sendiri di layar.
@@ -459,8 +461,10 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
 1. Header H1 biru: avatar inisial, nama, peran, tombol bel, empat kolom statistik sama lebar.
 2. Kolom cari "Cari pelanggan atau plat" tanpa judul pembuka.
 3. Admin melihat "Perlu tindakan" berdasarkan data draft dan stok; baris nol disembunyikan. Mekanik melihat draft miliknya.
-4. Admin melihat grid empat kolom "Menu lain" untuk Laporan, Data gejala dan kerusakan, Pengguna, Kategori produk, dan Pengaturan bengkel.
-5. "Diagnosis terbaru" maksimal tiga baris dalam satu kartu, ikon sesuai urgensi, serta "Lihat semua".
+4. **Menu lain:** pada Beranda admin berupa satu baris horizontal yang dapat digeser dengan padding 20 dp di dalam list, item 84 dp, dan ikon 56 dp; tanpa grid atau ruang kosong antarbari.
+5. **Aksi cepat:** tombol utama "Transaksi Baru" membuka tab Kasir dengan keranjang kosong.
+6. **Pelanggan opsional:** nama dan plat boleh kosong; nama ditampilkan sebagai "Pelanggan Umum" dan plat kosong tidak ditampilkan.
+6. "Diagnosis terbaru" maksimal tiga baris dalam satu kartu, ikon sesuai urgensi, serta "Lihat semua".
 6. Navigasi bawah. Tidak ada banner Diagnosis Cepat atau pil Ringkasan Hari Ini.
 
 **Perbedaan peran:**
@@ -470,7 +474,7 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
 | Empat angka statistik | Diagnosis, Draft, Final, Stok Menipis | Diagnosis, Draft Saya, Final, Riwayat |
 | Menu lain | Laporan, Data gejala dan kerusakan, Pengguna, Kategori produk, Pengaturan bengkel | Tidak ditampilkan |
 | Daftar terbaru | Diagnosis terbaru **semua pengguna** (ada nama mekanik) | Diagnosis terbaru **milik sendiri** |
-| Navigasi bawah | Beranda, Transaksi, [Diagnosis], Katalog, Profil | Beranda, Riwayat, [Diagnosis], Draft, Profil |
+| Navigasi bawah | Beranda, Transaksi, [Diagnosis], Kasir, Profil | Beranda, Riwayat, [Diagnosis], Kasir, Profil |
 
 ```
 +------------------------------+
@@ -493,10 +497,16 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
 ```
 
 ### 6.3 Form Gejala (halaman 5) `H2`
-- Header H2 dengan judul "Pilih Gejala" dan penghitung "3 gejala dipilih" (pil kecil di kanan).
-- Kolom pencarian pil dan **chip kategori gejala** yang bisa digulir (Semua, Mesin, Kelistrikan, Rem, Transmisi).
-- Daftar gejala sebagai **kartu dengan kotak centang** di kiri. Kartu terpilih: garis `primary` 2px dan latar `primarySoft` tipis.
-- **Bar bawah tetap** (putih, bayangan atas): "3 gejala dipilih" di kiri, tombol pil **"Diagnosis"** di kanan (nonaktif bila nol). **Tanpa navigasi bawah.**
+- Header H2 menampilkan judul "Pilih Gejala" dan pil penghitung pilihan dengan latar putih 16% serta teks putih.
+- Kolom cari 48 dp, chip kategori horizontal memakai `AppHorizontalChipList`, dan daftar kartu gejala 60 dp. Kode gejala tidak ditampilkan; nama dan kategori ditampilkan.
+- Kartu terpilih memakai garis primary 2 dp, latar primarySoft, dan kotak centang biru dengan centang putih. Bar bawah tetap menampilkan jumlah pilihan dan tombol Diagnosis.
+
+### 6.4 Hasil Diagnosis (halaman 6, 17) `H3`
+- Kartu tidak menimpa header. Konten dimulai 16 dp di bawah header dan kartu terpisah berjarak 12 dp dengan radius 16 dp.
+- Kartu utama menampilkan ikon sesuai warna urgensi, nama kerusakan, lencana urgensi, cincin keyakinan 64 dp dengan label Yakin, serta tanggal, mekanik, dan jumlah gejala. Kode G01 dan kode kerusakan tidak ditampilkan.
+- Kartu urgensi memakai warna lembut sesuai level; kartu Solusi memakai poin bulat; kemungkinan lain memakai batang persentase; kartu komponen/jasa hanya muncul bila berisi dan memakai ikon kategori bersama.
+- **Cincin keyakinan:** ukuran 72 dp, garis 7 dp, `primarySoft` sebagai jalur latar, busur `primary` dengan ujung bulat. Angka persentase berada di lubang cincin dengan warna `textTitle`; tanda `%` lebih kecil. Pada hasil diagnosis baru tersedia tombol teks **Diagnosis Ulang** di bawah **Buat Draft Transaksi**; pada detail riwayat tombol ini tidak ditampilkan.
+
 
 ```
 +------------------------------+
@@ -517,13 +527,12 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
 ```
 
 ### 6.4 Hasil Diagnosis (halaman 6, 17) `H3`
-1. **Header H3** dengan tombol kembali, judul "Hasil Diagnosis", dan tombol bagikan.
-2. **Kartu putih menimpa header** (radius 24), **ikon bulat** setengah keluar di atas.
-3. Nama **kerusakan utama** (`title`), badge urgensi, **keyakinan** sebagai angka besar `primary` dengan cincin progres.
-4. **Garis putus-putus**.
-5. Bagian berjudul `heading`: **Kemungkinan Lain** (bar persentase tipis), **Solusi** (daftar centang), **Komponen Terkait** dan **Jasa Terkait** (daftar centang dengan harga di kanan), **Estimasi Biaya** (angka tebal + **label "Perkiraan"** + estimasi waktu).
-6. Catatan kecil: "Hasil ini alat bantu, bukan kepastian."
-7. **Tombol mengambang**: "Buat Draft Transaksi" dengan lingkaran panah, dan "Diagnosis Ulang" (sekunder). **Tanpa navigasi bawah.**
+1. Header H3 memiliki tombol kembali dan bagikan dengan latar putih transparan 16% serta ikon putih. Tidak ada kartu yang menimpa header.
+2. Kartu utama menampilkan nama kerusakan, badge urgensi, confidence ring 72 dp, tanggal, mekanik, dan jumlah gejala. Kode gejala dan kode kerusakan tidak ditampilkan.
+3. Jarak antar kartu 12 dp. Kemungkinan lain memakai bar persentase, Solusi memakai poin, dan Komponen/Jasa memakai ikon kategori. Komponen menampilkan `Stok N` serta lencana Menipis/Habis bila berlaku.
+4. Baris jumlah gejala dapat diketuk untuk membuka daftar nama gejala tanpa kode. Kartu estimasi memakai label **Perkiraan** dan estimasi waktu.
+5. Hasil diagnosis baru menampilkan **Diagnosis Ulang** sebagai tombol teks di bawah **Buat Draft Transaksi**. Detail Riwayat tidak menampilkannya.
+
 
 ```
 +------------------------------+
@@ -581,11 +590,17 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
 ```
 
 ### 6.6 Katalog Produk dan Jasa (halaman 11, 12) `H4`
-- Header H4 ringkas dengan judul "Katalog", tombol tambah di header, **tab Produk | Jasa**, pencarian, dan chip kategori.
-- **Produk:** grid 2 kolom (kartu 154 dp). Kartu: lencana status stok ("Stok Menipis" `warning`, "Habis" `danger`), ikon produk, nama, harga, stok kecil, tombol bulat (admin: ubah).
-- **Jasa:** daftar kartu (nama, harga, tombol ubah).
+- Katalog hanya untuk admin dan dibuka sebagai layar biasa dengan tombol kembali, tanpa navigasi bawah. Header H4 memakai tombol tambah: Produk membuka Form Produk, Jasa membuka Form Jasa.
+- Tiga pintu masuk: Menu lain di Beranda, tindakan stok menipis di Beranda, dan tombol Kelola katalog di header Kasir.
+- **Produk:** daftar baris dengan kategori, stok, harga, dan detail/penyesuaian stok. **Jasa:** daftar baris nama dan harga.
 - Tidak memakai FAB untuk tambah; aksi ada di header.
-- Pada tab Produk, di samping chip kategori ada tautan kecil **"Kelola Kategori"** (khusus admin) yang membuka halaman 34.
+
+### 6.7 Kasir (halaman 35) `H4`
+- Kasir adalah tab navigasi bawah untuk admin dan mekanik. Header menampilkan tombol Draft Saya untuk mekanik atau Kelola katalog untuk admin.
+- Isi pelanggan, segmen Produk/Jasa, pencarian, chip kategori Produk, dan daftar baris item. Produk stok 0 berstatus Habis; jumlah tidak boleh melebihi stok.
+- Keranjang tersimpan di Provider. Bar keranjang menampilkan jumlah dan total serta membuka Draft Transaksi. Draft memakai tombol "Tambah item lagi" yang kembali ke Kasir.
+
+
 
 ```
 +------------------------------+
@@ -612,7 +627,8 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
 - Header H2 dengan judul "Draft Transaksi" dan chip status "Draft".
 - Kartu info pelanggan (nama, plat, ikon ubah).
 - Daftar item dengan **QtyStepper** (bagian 5.14). Geser atau ikon sampah untuk hapus.
-- Tombol "Tambah Item" tonal berikon plus, membuka bottom sheet pemilih produk dan jasa (halaman 19).
+- Tombol "Tambah item lagi" tonal berikon plus membuka Kasir; pemilih produk dan jasa sebagai bottom sheet (halaman 19) digantikan layar Kasir.
+
 - Kartu ringkasan: subtotal produk, subtotal jasa, garis putus-putus, **Total** tebal.
 - Tombol mengambang: "Simpan Draft" (mekanik) atau "Lanjut ke Pembayaran" (admin). **Tanpa navigasi bawah.**
 
@@ -727,14 +743,11 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
 ```
 
 ### 6.10 Laporan (halaman 15) dan Statistik (halaman 27) `H4`
-- Header H4 "Laporan" dengan chip periode (Hari Ini, 7 Hari, Bulan Ini, Kustom).
-- **Kartu angka besar** (gradasi biru): total penjualan, perubahan dibanding periode lalu.
-- Dua kartu kecil: jumlah transaksi dan rata-rata per transaksi.
-- **Grafik batang** penjualan per hari (bagian 20).
-- Bagian "Terlaris": daftar kartu dengan peringkat.
-- Bagian "Daftar Transaksi Final": kartu daftar.
-- **Statistik (27):** **grafik donat** distribusi kerusakan dan daftar peringkat kerusakan terbanyak.
-- Kartu angka memakai gradasi keluarga biru `primary` ke `gradientEnd`. Grafik donat membedakan potongan dengan warna biru bertingkat (`primary`, `primaryDark`, `lightBlue`) lalu warna status (`success`, `warning`) dan netral (`border`).
+- Header H4 hanya berisi tombol kembali dan judul "Laporan". Chip periode berada di bawah header dengan jarak 16 dp, memakai `AppHorizontalChipList`; chip aktif `primary`, chip lain putih dengan border tipis dan teks gelap.
+- **Kustom** membuka pemilih tanggal mulai lalu selesai. Kedua tanggal tidak boleh melewati hari ini dan mulai tidak boleh setelah selesai. Batal mengembalikan periode sebelumnya. Chip kustom menampilkan rentang singkat, misalnya `1-7 Okt`.
+- Kartu total memakai gradasi `primary` ke `gradientEnd`, diikuti kartu Transaksi dan Rata-rata. Margin layar 20 dp, radius 16 dp, jarak bagian 12 dp.
+- Urutan isi: total, metrik, grafik **Penjualan per Hari**, **Daftar Transaksi Final** yang dikelompokkan dengan tanggal `24 Okt 2026`, lalu **Terlaris** dengan chip Produk/Jasa dan maksimal lima item. Setiap transaksi membuka Detail Transaksi.
+
 
 ```
 +------------------------------+
@@ -757,7 +770,8 @@ menggunakan logo PNG transparan dengan latar adaptive/splash `#2457E6`.
  1 Busi NGK            12 terjual
 ```
 
-### 6.11 Login dan Pengaturan Server (halaman 2, 3) `H3`
+- Layar daftar tanpa navigasi bawah memakai padding bawah `MediaQuery` inset bawah sistem + 24 dp. Layar yang sudah menerapkan aturan ini: **Laporan (Daftar Transaksi Final dan Terlaris), Katalog, Detail Transaksi, dan Detail Stok**; layar daftar lain masih memakai clearance sesuai navigasi atau tombol aksinya.
+
 - Bagian atas biru (menerus ke tepi atas) dengan nama aplikasi, bagian bawah **kartu putih besar** (radius 24) berisi form menimpa header.
 - **Login:** input nama pengguna, input kata sandi dengan ikon mata, tombol "Masuk" pil penuh. **Tidak ada tautan ke Pengaturan Server.**
 - **Pengaturan Server (khusus admin, dibuka dari Profil):** header H3 dengan tombol kembali, kartu berisi judul "Alamat Server", keterangan singkat, **satu kolom "Alamat Server" berisi URL penuh** (contoh `http://192.168.1.10:8000`, tanpa kolom port terpisah), tombol "Tes Koneksi" (sekunder), kartu status koneksi di dalam kartu yang sama, tautan teks "Kembalikan ke bawaan", dan tombol mengambang "Simpan".
@@ -1293,12 +1307,9 @@ Catatan: logo BengkelPintar (motor dengan kunci inggris menyilang, bagian 19) di
 Dibuat dengan paket grafik Flutter yang bisa jalan tanpa internet. Semua grafik tampil di dalam **kartu putih** (radius 16) dengan judul `heading` dan keterangan `bodySmall`.
 
 ### 20.1 Grafik Batang (Penjualan per Hari)
-- Batang `primary` dengan sudut atas membulat 6, lebar 16-20, jarak antar batang 12.
-- Batang periode terpilih (misalnya hari ini): `primary` penuh. Lainnya: `primary` opasitas 40%.
-- Garis bantu horizontal putus-putus `border`, tanpa garis vertikal.
-- Label sumbu `bodySmall` `textMuted`. Hari dalam tiga huruf (Sen, Sel, Rab).
-- Tooltip: kotak `navy` radius 8, teks putih "Rp720 rb".
-- Tinggi grafik 180 dp.
+- Grafik berada di kartu putih radius 16 dengan tinggi area 180 dp. Batang `primary`, ujung atas radius 6, dan batang tetap memiliki tinggi minimum saat nilainya nol agar data satu hari tetap terlihat.
+- Label sumbu X memakai tanggal singkat seperti `24 Okt`; nilai di atas batang dipadatkan seperti `Rp135rb` dan nilai lengkap tersedia saat batang diketuk melalui tooltip. Garis bantu sumbu Y tipis memakai `border`. Label tidak boleh terpotong; jumlah label mengikuti lebar layar.
+- Jika tidak ada data, tampilkan keadaan kosong khusus laporan, bukan grafik kosong atau rusak.
 
 ### 20.2 Grafik Donat (Distribusi Kerusakan)
 - Lingkaran donat dengan tebal 28 dp, celah antar potongan 2 dp, ujung potongan membulat.

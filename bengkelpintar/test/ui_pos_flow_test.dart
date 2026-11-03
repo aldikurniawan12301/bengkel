@@ -18,6 +18,7 @@ import 'package:bengkelpintar/data/models/user.dart';
 import 'package:bengkelpintar/features/pos/draft_screen.dart';
 import 'package:bengkelpintar/features/pos/finalization_screen.dart';
 import 'package:bengkelpintar/features/pos/catalog_screen.dart';
+import 'package:bengkelpintar/features/pos/cashier_screen.dart';
 import 'package:bengkelpintar/features/pos/transaction_list_screen.dart';
 import 'package:bengkelpintar/features/admin/profile_screen.dart';
 import 'package:bengkelpintar/services/service_interfaces.dart';
@@ -293,7 +294,7 @@ void main() {
   });
 
   testWidgets(
-    'katalog menambah item, menampilkan keranjang, lalu membuka draft',
+    'kasir menambah item, menampilkan keranjang, lalu membuka draft',
     (tester) async {
       final product = const Produk(
         id: 1,
@@ -318,7 +319,7 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.light,
-            home: const CatalogScreen(),
+            home: const CashierScreen(),
             onGenerateRoute: (settings) => MaterialPageRoute(
               settings: settings,
               builder: (_) => DraftScreen(
@@ -329,13 +330,14 @@ void main() {
         ),
       );
       await tester.pump(const Duration(milliseconds: 20));
+      await tester.pump(const Duration(milliseconds: 20));
       expect(find.text('Busi NGK Standar'), findsAtLeastNWidgets(1));
       await tester.tap(find.byIcon(AppIcons.addRounded).last);
       await tester.pump();
-      expect(find.text('Lihat Draft'), findsOneWidget);
+      expect(find.text('Lihat Keranjang'), findsOneWidget);
       expect(find.text('1 item · Rp25.000'), findsOneWidget);
       expect(find.byType(QtyStepper), findsOneWidget);
-      await tester.tap(find.text('Lihat Draft'));
+      await tester.tap(find.text('Lihat Keranjang'));
       await tester.pump(const Duration(milliseconds: 20));
       await tester.pump(const Duration(milliseconds: 20));
       expect(find.text('Draft Transaksi'), findsOneWidget);

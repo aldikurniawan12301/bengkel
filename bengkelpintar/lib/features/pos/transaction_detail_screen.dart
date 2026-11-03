@@ -36,7 +36,8 @@ class TransactionDetailScreen extends StatelessWidget {
               ListCard(
                 title: transaction.nomor,
                 subtitle:
-                    '${transaction.namaPelanggan} · ${transaction.platNomor}\n${formatTanggalIndonesia(transaction.waktu)}',
+                    '${transaction.namaPelanggan.trim().isEmpty ? 'Pelanggan Umum' : transaction.namaPelanggan}'
+                    '${transaction.platNomor.trim().isEmpty ? '' : ' · ${transaction.platNomor}'}\n${formatTanggalIndonesia(transaction.waktu)}',
                 trailing: Text(
                   transaction.status == 'final' ? 'Final' : 'Draft',
                   style: AppText.subheading,

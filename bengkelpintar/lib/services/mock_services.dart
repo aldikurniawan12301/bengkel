@@ -567,8 +567,10 @@ class MockTransaksiService extends MockServiceBase implements TransaksiService {
       id: id,
       nomor: 'TRX-${id.toString().padLeft(4, '0')}',
       status: 'draft',
-      namaPelanggan: namaPelanggan,
-      platNomor: platNomor,
+      namaPelanggan: namaPelanggan.trim().isEmpty
+          ? 'Pelanggan Umum'
+          : namaPelanggan.trim(),
+      platNomor: platNomor.trim(),
       total: resolved.fold(0, (sum, item) => sum + item.subtotal),
       dibuatOleh: user.nama,
       dibuatOlehId: user.id,

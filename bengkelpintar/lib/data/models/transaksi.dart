@@ -104,8 +104,11 @@ class Transaksi {
     id: intFromJson(json['id']!),
     nomor: json['nomor'] as String,
     status: json['status'] as String,
-    namaPelanggan: json['nama_pelanggan'] as String,
-    platNomor: json['plat_nomor'] as String,
+    namaPelanggan:
+        (json['nama_pelanggan'] as String?)?.trim().isNotEmpty == true
+        ? (json['nama_pelanggan'] as String).trim()
+        : 'Pelanggan Umum',
+    platNomor: (json['plat_nomor'] as String?)?.trim() ?? '',
     total: intFromJson(json['total']!),
     metodeBayar: json['metode_bayar'] as String?,
     jumlahDibayar: (json['jumlah_dibayar'] as num?)?.toInt(),
@@ -124,7 +127,7 @@ class Transaksi {
     'id': id,
     'nomor': nomor,
     'status': status,
-    'nama_pelanggan': namaPelanggan,
+    'nama_pelanggan': namaPelanggan.isEmpty ? 'Pelanggan Umum' : namaPelanggan,
     'plat_nomor': platNomor,
     'total': total,
     'metode_bayar': metodeBayar,

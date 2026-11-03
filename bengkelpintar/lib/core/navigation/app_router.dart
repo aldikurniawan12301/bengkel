@@ -9,6 +9,7 @@ import '../../features/auth/splash_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/diagnosis/diagnosis_screens.dart';
 import '../../features/pos/pos_screens.dart';
+import '../../features/pos/cashier_screen.dart';
 import '../../features/admin/admin_screens.dart';
 import '../../features/pos/product_form_screen.dart';
 import '../../features/pos/service_form_screen.dart';
@@ -82,8 +83,12 @@ abstract final class AppRouter {
     if (routeName == AppRoutes.transactions) {
       return const TransactionListScreen();
     }
+    if (routeName == AppRoutes.cashier) {
+      final entry = arguments is CashierEntry ? arguments : null;
+      return CashierScreen(entry: entry);
+    }
     if (routeName == AppRoutes.productPicker) {
-      return const DraftScreen();
+      return const CashierScreen();
     }
     if (routeName == AppRoutes.productCatalog) {
       return const CatalogScreen();

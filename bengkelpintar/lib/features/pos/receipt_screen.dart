@@ -6,13 +6,14 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import '../../core/navigation/app_routes.dart';
+import '../../core/widgets/blue_header.dart';
+import '../../core/widgets/app_button.dart';
+import '../../core/widgets/circle_icon_button.dart';
+import '../../core/widgets/app_scaffold.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/formatters.dart';
-import '../../core/widgets/blue_header.dart';
-import '../../core/widgets/app_scaffold.dart';
-import '../../core/widgets/app_button.dart';
 import '../../data/models/transaksi.dart';
 import '../../data/models/pengaturan_bengkel.dart';
 
@@ -37,7 +38,13 @@ class ReceiptScreen extends StatelessWidget {
             pw.Text(workshop.nama),
             pw.Text(workshop.alamat),
             pw.Text(transaction.nomor),
-            pw.Text(transaction.namaPelanggan),
+            pw.Text(
+              transaction.namaPelanggan.trim().isEmpty
+                  ? 'Pelanggan Umum'
+                  : transaction.namaPelanggan,
+            ),
+            if (transaction.platNomor.trim().isNotEmpty)
+              pw.Text(transaction.platNomor),
             for (final item in transaction.items)
               pw.Text('${item.nama} ${item.jumlah} x ${item.hargaSatuan}'),
             pw.Text('TOTAL ${transaction.total}'),
@@ -61,7 +68,13 @@ class ReceiptScreen extends StatelessWidget {
             title: 'Transaksi Berhasil',
             type: BlueHeaderType.h2,
             onBack: () => Navigator.maybePop(context),
-            action: const Icon(AppIcons.checkCircle, color: AppColors.surface),
+            action: CircleIconButton(
+              icon: AppIcons.checkCircle,
+              onHeader: true,
+              medium: true,
+              tooltip: 'Selesai',
+              onPressed: () {},
+            ),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -87,6 +100,14 @@ class ReceiptScreen extends StatelessWidget {
                         settings?.telepon ?? '0812-3456-7890',
                         style: AppText.bodySmall,
                       ),
+                      Text(
+                        transaction.namaPelanggan.trim().isEmpty
+                            ? 'Pelanggan Umum'
+                            : transaction.namaPelanggan,
+                        style: AppText.body,
+                      ),
+                      if (transaction.platNomor.trim().isNotEmpty)
+                        Text(transaction.platNomor, style: AppText.bodySmall),
                       for (final item in transaction.items)
                         ListTile(
                           title: Text(item.nama),

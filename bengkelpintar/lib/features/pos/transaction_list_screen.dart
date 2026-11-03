@@ -5,6 +5,7 @@ import '../../core/theme/app_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/navigation/app_routes.dart';
+import 'cashier_screen.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text.dart';
@@ -21,7 +22,6 @@ import '../../core/widgets/floating_nav_bar.dart';
 import '../../core/navigation/home_menu_config.dart';
 import '../../core/widgets/loading_skeleton.dart';
 import '../../core/widgets/status_badge.dart';
-import '../../core/widgets/circle_icon_button.dart';
 import '../../data/models/transaksi.dart';
 import '../../services/service_interfaces.dart';
 import '../../core/role/role_provider.dart';
@@ -67,14 +67,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     ? 'Draft Saya'
                     : 'Transaksi',
                 type: BlueHeaderType.h4,
-                action: CircleIconButton(
-                  icon: AppIcons.addRounded,
-                  medium: true,
-                  onHeader: true,
-                  tooltip: 'Transaksi baru',
-                  onPressed: () =>
-                      Navigator.pushNamed(context, AppRoutes.draft),
-                ),
+                action: null,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(
@@ -97,8 +90,11 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                       label: 'Transaksi Baru',
                       icon: AppIcons.addRounded,
                       height: AppSpacing.inputHeight,
-                      onPressed: () =>
-                          Navigator.pushNamed(context, AppRoutes.draft),
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.cashier,
+                        arguments: const CashierEntry(clear: true),
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     FutureBuilder<List<Transaksi>>(
@@ -290,7 +286,8 @@ class _TransactionCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                '${transaction.namaPelanggan} · ${transaction.items.length} item',
+                                '${transaction.namaPelanggan.trim().isEmpty ? 'Pelanggan Umum' : transaction.namaPelanggan}'
+                                '${transaction.platNomor.trim().isEmpty ? '' : ' · ${transaction.platNomor}'} · ${transaction.items.length} item',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppText.body,

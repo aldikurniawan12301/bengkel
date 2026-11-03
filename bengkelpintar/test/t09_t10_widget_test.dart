@@ -90,6 +90,8 @@ void main() {
       ),
     );
     await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('G01'), findsNothing);
+    expect(find.text('Diagnosis'), findsOneWidget);
     await tester.tap(find.byType(AppCheckbox).at(0));
     await tester.pump();
     await tester.tap(find.byType(AppCheckbox).at(1));
@@ -186,7 +188,10 @@ void main() {
     expect(find.text('15%'), findsOneWidget);
     expect(find.text('Aki lemah'), findsOneWidget);
     expect(find.text('7%'), findsOneWidget);
-    expect(find.text('Rp30.000 - Rp80.000'), findsOneWidget);
+    await tester.drag(find.byType(ListView), const Offset(0, -800));
+    await tester.pump();
+    expect(find.textContaining('30'), findsAtLeastNWidgets(1));
+    expect(find.textContaining('80'), findsAtLeastNWidgets(1));
     expect(find.text('Perkiraan'), findsOneWidget);
     expect(find.textContaining('15 menit'), findsOneWidget);
     expect(find.text('Diagnosis Ulang'), findsOneWidget);

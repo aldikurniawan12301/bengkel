@@ -5,11 +5,15 @@ import 'package:provider/provider.dart';
 import '../../core/navigation/app_routes.dart';
 import '../../core/navigation/home_menu_config.dart';
 import '../../core/role/role_provider.dart';
+import '../pos/cashier_screen.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_icons.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/widgets/app_search_bar.dart';
+import '../../core/widgets/app_horizontal_chip_list.dart';
+
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/error_state.dart';
@@ -84,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final nav = HomeMenuConfig.bottomNavigationFor(role);
     final name = admin ? 'Andi Pratama' : 'Budi Santoso';
     final menus = [
+      ('Katalog', AppRoutes.productCatalog, AppIcons.inventory),
       ('Laporan', AppRoutes.reports, AppIcons.barChart),
       ('Gejala dan kerusakan', AppRoutes.dataMaster, AppIcons.factCheckRounded),
       ('Pengguna', AppRoutes.manageUsers, AppIcons.roundedPerson),
@@ -138,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             summary.draftCount,
                             'Draft Saya',
                             AppIcons.description,
-                            AppRoutes.draft,
+                            AppRoutes.cashier,
                           ),
                           (
                             summary.finalCount,
@@ -199,7 +204,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: AppIcons.addRounded,
                             color: AppColors.primary,
                             showDivider: false,
-                            onTap: () => _open(AppRoutes.draft),
+                            onTap: () => _open(
+                              AppRoutes.cashier,
+                              arguments: const CashierEntry(clear: true),
+                            ),
                           ),
                         ],
                       ),
@@ -247,34 +255,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: AppSpacing.lg),
                         const Text('Menu lain', style: AppText.heading),
                         const SizedBox(height: AppSpacing.sm),
-                        Transform.translate(
-                          offset: const Offset(-AppSpacing.pageMargin, 0),
-                          child: SizedBox(
-                            width: MediaQuery.sizeOf(context).width,
-                            height: AppSpacing.homeWorkRowHeight,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.only(
-                                left: AppSpacing.pageMargin,
+                        AppHorizontalChipList(
+                          children: [
+                            for (final menu in menus)
+                              _MenuTile(
+                                label: menu.$1,
+                                icon: menu.$3,
+                                onTap: () => _open(menu.$2),
                               ),
-                              children: [
-                                for (
-                                  var index = 0;
-                                  index < menus.length;
-                                  index++
-                                ) ...[
-                                  if (index > 0)
-                                    const SizedBox(width: AppSpacing.md),
-                                  _MenuTile(
-                                    label: menus[index].$1,
-                                    icon: menus[index].$3,
-                                    onTap: () => _open(menus[index].$2),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
+                          ],
                         ),
                       ] else ...[
                         const Text('Draft saya', style: AppText.heading),
@@ -282,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         _ActionRow(
                           label: 'Lihat draft saya',
                           showDivider: false,
-                          onTap: () => _open(AppRoutes.draft),
+                          onTap: () => _open(AppRoutes.transactions),
                         ),
                       ],
                       const SizedBox(height: AppSpacing.lg),
@@ -496,6 +485,7 @@ class _MenuTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: AppSpacing.homeWorkIcon,
@@ -516,6 +506,7 @@ class _MenuTile extends StatelessWidget {
               child: Text(
                 label,
                 maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: AppText.label,
               ),

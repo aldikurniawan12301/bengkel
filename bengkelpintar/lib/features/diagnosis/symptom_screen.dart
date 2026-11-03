@@ -114,8 +114,10 @@ class _SymptomScreenState extends State<SymptomScreen> {
                 return ListView(
                   padding: AppInsets.page(
                     context,
-                    top: AppSpacing.lg,
-                    bottom: AppSpacing.xl,
+                    top: AppSpacing.contentTopGap,
+                    bottom:
+                        AppSpacing.bottomBarClearance +
+                        MediaQuery.paddingOf(context).bottom,
                   ),
                   children: [
                     AppSearchBar(
@@ -143,8 +145,8 @@ class _SymptomScreenState extends State<SymptomScreen> {
                     const SizedBox(height: AppSpacing.lg),
                     if (items.isEmpty)
                       const EmptyState(
-                        title: 'Tidak ditemukan',
-                        message: 'Coba kata kunci lain.',
+                        title: 'Gejala tidak ditemukan',
+                        message: 'Coba kata lain.',
                         icon: AppIcons.searchOff,
                       )
                     else ...[
@@ -153,7 +155,7 @@ class _SymptomScreenState extends State<SymptomScreen> {
                           padding: const EdgeInsets.only(bottom: AppSpacing.md),
                           child: CheckListItem(
                             title: item.nama,
-                            subtitle: item.kode,
+                            subtitle: item.kategori,
                             value: _selected.contains(item.id),
                             onChanged: (_) => setState(
                               () => _selected.contains(item.id)

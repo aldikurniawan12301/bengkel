@@ -51,6 +51,8 @@ abstract final class AppSpacing {
   static const iconLarge = 32.0;
   static const productIcon = 52.0;
   static const statusIcon = 64.0;
+  static const confidenceRingSize = 72.0;
+  static const confidenceRingStroke = 7.0;
   static const radiusSm = 8.0;
   static const radiusMd = 12.0;
   static const radiusLg = 12.0;
@@ -66,12 +68,13 @@ abstract final class AppSpacing {
   static const navShadowBlur = 24.0;
   static const navShadowOffsetY = 8.0;
   static const bottomBarClearance = 88.0;
+  static const listBottomInset = 24.0;
   static const sectionGap = 16.0;
   static const homeStatHeight = 72.0;
   static const homeStatLargeTextHeight = 104.0;
   static const homeStatIconBox = 32.0;
   static const homeWorkItemWidth = 84.0;
-  static const homeWorkIcon = 48.0;
+  static const homeWorkIcon = 56.0;
   static const homeWorkLabelHeight = 36.0;
   static const homeWorkRowHeight = 112.0;
   static const homeDiagnosisCardPadding = 14.0;

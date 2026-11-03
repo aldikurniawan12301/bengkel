@@ -24,7 +24,7 @@ class CheckListItem extends StatelessWidget {
     elevation: 0,
     color: value ? AppColors.primarySoft : AppColors.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       side: BorderSide(
         color: value ? AppColors.primary : AppColors.border,
         width: value ? AppSpacing.selectedBorderWidth : AppSpacing.borderWidth,
@@ -36,7 +36,7 @@ class CheckListItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.cardPadding,
-          vertical: AppSpacing.lg,
+          vertical: AppSpacing.md,
         ),
         child: Row(
           children: [
@@ -45,10 +45,21 @@ class CheckListItem extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(title, style: AppText.body),
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppText.subheading,
+                  ),
                   if (subtitle != null)
-                    Text(subtitle!, style: AppText.bodySmall),
+                    Text(
+                      subtitle!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.bodySmall,
+                    ),
                 ],
               ),
             ),

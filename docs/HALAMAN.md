@@ -44,8 +44,8 @@ Detail lengkap ada di `DESIGN.md` bagian 0.
 - [ ] 8. Draft Transaksi / Keranjang (M, A) - T-13 | Header: H2 | Nav: Tidak (tombol mengambang) | Pola: 6.7
 - [ ] 9. Daftar Transaksi (M, A) - T-14 | Header: H4 | Nav: Ya | Pola: 6.5
 - [ ] 10. Finalisasi dan Nota (A) - T-15 | Header: H2 | Nav: Tidak (tombol mengambang) | Pola: 6.8
-- [ ] 11. Katalog Produk (A) - T-16 | Header: H4 (tab Produk) | Nav: Ya | Pola: 6.6
-- [ ] 12. Katalog Jasa (A) - T-17 | Header: H4 (tab Jasa) | Nav: Ya | Pola: 6.6
+- [ ] 11. Katalog Produk (A) - T-16 | Header: H4 | Nav: Tidak | Pola: 6.6
+- [ ] 12. Katalog Jasa (A) - T-17 | Header: H4 | Nav: Tidak | Pola: 6.6
 - [ ] 13. Menu Data Gejala dan Kerusakan (A) - T-19 | Header: H2 | Nav: Tidak | Pola: 6.13
 - [ ] 14. Kelola Pengguna (A) - T-20 | Header: H4 | Nav: Tidak | Pola: 6.13
 - [ ] 15. Laporan Penjualan (A) - T-21 | Header: H4 | Nav: Tidak | Pola: 6.10
@@ -55,7 +55,7 @@ Detail lengkap ada di `DESIGN.md` bagian 0.
 
 - [ ] 17. Detail Riwayat Diagnosis (M, A) - T-11 | Header: H3 | Nav: Tidak | Pola: 6.4 (tambah info tanggal, mekanik, gejala)
 - [ ] 18. Detail Transaksi (A) - T-14 | Header: H3 | Nav: Tidak | Pola: 6.15
-- [ ] 19. Pemilih Produk dan Jasa (M, A) - T-13 | Header: Sheet | Nav: Tidak | Pola: 6.14
+- [ ] 19. Pemilih Produk dan Jasa (M, A) - T-13 | **Digantikan oleh halaman 35 Kasir; bottom sheet tidak dipakai**
 - [ ] 20. Form Tambah/Ubah Produk (A) - T-16 | Header: H2 | Nav: Tidak | Pola: 6.9
 - [ ] 21. Form Tambah/Ubah Jasa (A) - T-17 | Header: H2 | Nav: Tidak | Pola: 6.9
 - [ ] 22. Detail Produk dan Penyesuaian Stok (A) - T-18 | Header: H3 | Nav: Tidak | Pola: 6.15
@@ -64,7 +64,9 @@ Detail lengkap ada di `DESIGN.md` bagian 0.
 - [ ] 25. Form Tambah/Ubah Pengguna (A) - T-20 | Header: H2 | Nav: Tidak | Pola: 6.9
 - [ ] 26. Akses Ditolak (M, A) - T-03 | Header: H2 | Nav: Tidak | Pola: 6.16
 
-## Halaman Tambahan Hasil Peninjauan (7)
+## Halaman Tambahan Hasil Peninjauan (8)
+
+- [ ] 35. Kasir (M, A) - T-31 | Header: H4 | Nav: Ya | Pola: 6.7 baru
 
 - [ ] 28. Daftar Gejala (A) - T-29 | Header: H4 | Nav: Tidak | Pola: 6.13
 - [ ] 29. Daftar Kerusakan (A) - T-29 | Header: H4 | Nav: Tidak | Pola: 6.13
@@ -84,15 +86,15 @@ Detail lengkap ada di `DESIGN.md` bagian 0.
 
 | Peran | Kiri 1 | Kiri 2 | Tengah (menonjol) | Kanan 1 | Kanan 2 |
 |---|---|---|---|---|---|
-| **Mekanik** | Beranda | Riwayat | **Diagnosis** | Draft | Profil |
-| **Admin** | Beranda | Transaksi | **Diagnosis** | Katalog | Profil |
+| **Mekanik** | Beranda | Riwayat | **Diagnosis** | Kasir | Profil |
+| **Admin** | Beranda | Transaksi | **Diagnosis** | Kasir | Profil |
 
-Halaman yang menampilkan navigasi bawah: **4, 7, 9, 11, 12, 16**.
-Menu **Katalog** (admin) membuka satu layar dengan dua tab: **Produk (11)** dan **Jasa (12)**.
+Halaman yang menampilkan navigasi bawah: **4, 7, 9, 16, 35**.
+Katalog (11, 12) dibuka dari Beranda, tindakan stok menipis, atau header Kasir.
 
 ## Halaman per Peran
 
-**Mekanik (14):** 1, 3, 4, 5, 6, 7, 8, 9, 16, 17, 19, 26, 30, 33
+**Mekanik (15):** 1, 3, 4, 5, 6, 7, 8, 9, 16, 17, 26, 30, 33, 35
 
 **Admin (semua):** 1 sampai 26 dan 28 sampai 34, ditambah 27 jika diambil
 
@@ -109,10 +111,10 @@ Menu **Katalog** (admin) membuka satu layar dengan dua tab: **Produk (11)** dan 
 |---|---|
 | Halaman utama | 16 |
 | Halaman dan tampilan tambahan | 10 |
-| Tambahan hasil peninjauan | 7 |
+| Tambahan hasil peninjauan | 8 |
 | Opsional | 1 |
-| **Total** | **34** |
+| **Total** | **35** |
 
 ## Progres
 
-Total: **0 / 34** selesai (perbarui angka ini secara manual)
+Total: **0 / 35** selesai (perbarui angka ini secara manual)

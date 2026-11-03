@@ -27,13 +27,13 @@ class CategoryIcon extends StatelessWidget {
       borderRadius: service ? null : BorderRadius.circular(AppSpacing.radiusMd),
     ),
     child: Icon(
-      service ? AppIcons.handymanRounded : _iconFor(category),
+      service ? AppIcons.handymanRounded : CategoryIcon.forCategory(category),
       color: AppColors.primary,
       size: service ? AppSpacing.iconSmall : AppSpacing.icon,
     ),
   );
 
-  IconData _iconFor(String? value) {
+  static IconData forCategory(String? value) {
     final normalized = (value ?? '').toLowerCase();
     if (normalized.contains('pengapian') || normalized.contains('busi')) {
       return AppIcons.flare;

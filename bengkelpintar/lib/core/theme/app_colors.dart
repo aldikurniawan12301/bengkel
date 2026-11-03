@@ -23,6 +23,7 @@ abstract final class AppColors {
 
   static const success = Color(0xFF12B76A);
   static const warning = Color(0xFFF79009);
+  static const warningText = Color(0xFFB54708);
   static const danger = Color(0xFFE5484D);
   static const info = primary;
 

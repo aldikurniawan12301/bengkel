@@ -121,8 +121,14 @@ class _FinalizationScreenState extends State<FinalizationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(item.nomor, style: AppText.subheading),
-                        Text(item.namaPelanggan, style: AppText.body),
-                        Text(item.platNomor, style: AppText.bodySmall),
+                        Text(
+                          item.namaPelanggan.trim().isEmpty
+                              ? 'Pelanggan Umum'
+                              : item.namaPelanggan,
+                          style: AppText.body,
+                        ),
+                        if (item.platNomor.trim().isNotEmpty)
+                          Text(item.platNomor, style: AppText.bodySmall),
                         const SizedBox(height: AppSpacing.sm),
                         const DashedDivider(),
                         for (final line in item.items)

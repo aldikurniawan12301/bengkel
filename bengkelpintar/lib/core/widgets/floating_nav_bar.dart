@@ -148,6 +148,7 @@ class FloatingNavBar extends StatelessWidget {
     'beranda' => AppIcons.home,
     'riwayat' => AppIcons.history,
     'transaksi' => AppIcons.receiptLong,
+    'kasir' => AppIcons.pointOfSale,
     'draft' => AppIcons.description,
     'katalog' => AppIcons.inventory,
     'profil' => AppIcons.person,

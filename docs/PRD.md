@@ -167,13 +167,16 @@ Hasil:
 
 Model hanya mengklasifikasikan. Biaya, solusi, dan urgensi bukan hasil perhitungan model.
 
-### 6.3 POS (Batas Minimal)
+### 6.3 Kasir dan navigasi
+- Navigasi bawah: admin Beranda | Transaksi | Diagnosis | Kasir | Profil; mekanik Beranda | Riwayat | Diagnosis | Kasir | Profil.
+- Kasir menjadi layar utama POS untuk memilih produk/jasa, mengisi pelanggan, dan mempertahankan keranjang.
+- Katalog admin dibuka dari Beranda, tindakan stok menipis, atau header Kasir; tidak menjadi tab navigasi.
 | ID | Kebutuhan |
 |---|---|
 | F-POS-01 | Admin dapat menambah, mengubah, dan menonaktifkan **produk** (nama, kategori, harga, stok). |
 | F-POS-02 | Admin dapat menambah, mengubah, dan menonaktifkan **jasa** (nama, harga). |
 | F-POS-03 | Stok produk berkurang otomatis saat transaksi difinalkan. |
-| F-POS-04 | Mekanik dapat membuat **draft transaksi** berisi produk dan jasa. |
+| F-POS-04 | Mekanik dapat membuat **draft transaksi** berisi produk dan jasa, dengan data pelanggan opsional. |
 | F-POS-05 | Admin dapat memfinalkan transaksi, dan stok dipotong dalam satu proses (semua berhasil atau batal semua). |
 | F-POS-06 | Sistem membuat **nota** yang dapat dibagikan sebagai PDF. |
 | F-POS-07 | Admin dapat melihat **laporan sederhana**: total penjualan per periode dan daftar transaksi. |
@@ -184,7 +187,7 @@ Model hanya mengklasifikasikan. Biaya, solusi, dan urgensi bukan hasil perhitung
 | F-POS-12 | Saat finalisasi, admin memilih metode pembayaran (tunai atau transfer), mengisi jumlah dibayar, dan sistem menghitung kembalian. |
 | F-POS-13 | Mekanik hanya melihat draft transaksi miliknya, admin melihat semua transaksi. |
 
-### 6.4 Data Master Diagnosis (Admin)
+- `nama_pelanggan` dan `plat_nomor` boleh null atau string kosong. Klien menampilkan "Pelanggan Umum" bila nama kosong dan tidak menampilkan plat kosong pada daftar, detail, dan nota.
 | ID | Kebutuhan |
 |---|---|
 | F-MST-01 | Admin dapat mengelola daftar **gejala**. |
@@ -221,8 +224,9 @@ Total **34 halaman** (33 wajib, 1 opsional). Urutan pengerjaan, jenis header, na
 | 8 | Draft Transaksi / Keranjang | Mekanik, Admin | Produk dan jasa terpilih |
 | 9 | Daftar Transaksi | Mekanik, Admin | Admin: draft dan final. Mekanik: "Draft Saya" (draft miliknya) |
 | 10 | Finalisasi dan Nota | Admin | Pembayaran, nota, bagikan PDF |
-| 11 | Katalog Produk | Admin | Daftar produk dan stok (tab Produk) |
-| 12 | Katalog Jasa | Admin | Daftar jasa (tab Jasa) |
+| 11 | Katalog Produk | Admin | Layar biasa admin, dibuka dari Beranda atau Kasir |
+| 12 | Katalog Jasa | Admin | Layar biasa admin, dibuka dari Katalog |
+| 35 | Kasir | Mekanik, Admin | Tab navigasi bawah, keranjang dan pemilihan item |
 | 13 | Menu Data Gejala dan Kerusakan | Admin | Menu menuju halaman 28 dan 29 |
 | 14 | Kelola Pengguna | Admin | Daftar pengguna |
 | 15 | Laporan Penjualan | Admin | Penjualan per periode |
@@ -473,8 +477,8 @@ Mock data di fase 1 **harus berbentuk persis** seperti respons di bawah, agar sa
 ```json
 {
   "riwayat_diagnosis_id": 31,
-  "nama_pelanggan": "Dedi Kurniawan",
-  "plat_nomor": "D 1234 XX",
+  "nama_pelanggan": null,
+  "plat_nomor": null,
   "items": [
     { "tipe": "produk", "id": 1, "jumlah": 1 },
     { "tipe": "jasa", "id": 1, "jumlah": 1 }
@@ -528,7 +532,7 @@ Mock data di fase 1 **harus berbentuk persis** seperti respons di bawah, agar sa
 | `produk` | id, nama, kategori_id, harga, stok, stok_minimum, aktif |
 | `jasa` | id, nama, harga, aktif |
 | `riwayat_diagnosis` | id, pengguna_id, gejala (daftar), hasil, keyakinan, waktu |
-| `transaksi` | id, nomor, status (draft/final), nama_pelanggan, plat_nomor, total, metode_bayar, jumlah_dibayar, dibuat_oleh, difinalkan_oleh, riwayat_diagnosis_id, waktu |
+| `transaksi` | id, nomor, status (draft/final), nama_pelanggan (nullable), plat_nomor (nullable), total, metode_bayar, jumlah_dibayar, dibuat_oleh, difinalkan_oleh, riwayat_diagnosis_id, waktu |
 | `item_transaksi` | id, transaksi_id, tipe, produk_id/jasa_id, jumlah, harga_satuan |
 | `mutasi_stok` | id, produk_id, jumlah, alasan, pengguna_id, transaksi_id (boleh kosong), waktu |
 | `kategori` | id, nama, aktif |

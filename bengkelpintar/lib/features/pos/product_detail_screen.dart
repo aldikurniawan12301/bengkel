@@ -94,18 +94,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 title: _product.nama,
                 subtitle: formatRupiah(_product.harga),
-                trailing: StatusBadge(
-                  status: _product.stok == 0
-                      ? AppStatus.stokHabis
-                      : _product.stok <= _product.stokMinimum
-                      ? AppStatus.stokMenipis
-                      : AppStatus.stokAman,
-                ),
-                footer: Row(
+                footer: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Stok ${_product.stok}', style: AppText.body),
-                    const Spacer(),
-                    Text(_product.kategoriNama, style: AppText.bodySmall),
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.xs,
+                      children: [
+                        StatusBadge(
+                          status: _product.stok == 0
+                              ? AppStatus.stokHabis
+                              : _product.stok <= _product.stokMinimum
+                              ? AppStatus.stokMenipis
+                              : AppStatus.stokAman,
+                        ),
+                        Text('Stok ${_product.stok}', style: AppText.body),
+                        Text(_product.kategoriNama, style: AppText.bodySmall),
+                      ],
+                    ),
                   ],
                 ),
               ),

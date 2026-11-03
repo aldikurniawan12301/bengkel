@@ -14,7 +14,11 @@ class UrgensiBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, color, soft) = switch (level) {
       Urgensi.rendah => ('Rendah', AppColors.success, AppColors.successSoft),
-      Urgensi.sedang => ('Sedang', AppColors.warning, AppColors.warningSoft),
+      Urgensi.sedang => (
+        'Sedang',
+        AppColors.warningText,
+        AppColors.warningSoft,
+      ),
       Urgensi.tinggi => ('Tinggi', AppColors.danger, AppColors.dangerSoft),
     };
     return Container(

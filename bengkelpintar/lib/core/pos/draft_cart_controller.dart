@@ -7,6 +7,20 @@ import '../../data/models/transaksi.dart';
 class DraftCartController extends ChangeNotifier {
   final Map<String, ItemTransaksiRequest> _items = {};
   final Map<String, int> _prices = {};
+  final Map<String, int> _limits = {};
+  String customerName = '';
+  String plateNumber = '';
+  int? diagnosisId;
+
+  void setCustomer({required String name, required String plate}) {
+    customerName = name;
+    plateNumber = plate;
+    notifyListeners();
+  }
+
+  void setItemPrice(String type, int id, int price) {
+    _prices['$type:$id'] = price;
+  }
 
   List<ItemTransaksiRequest> get requests => List.unmodifiable(_items.values);
 
@@ -18,24 +32,31 @@ class DraftCartController extends ChangeNotifier {
 
   int price(String type, int id) => _prices['$type:$id'] ?? 0;
 
-  void add(String type, int id, {int amount = 1, int? price}) {
+  void setLimit(String type, int id, int limit) {
+    _limits['$type:$id'] = limit;
+    final current = quantity(type, id);
+    if (current > limit) setQuantity(type, id, limit);
+  }
+
+  void add(String type, int id, {int amount = 1, int? price, int? limit}) {
     final key = '$type:$id';
-    final current = _items[key];
-    _items[key] = ItemTransaksiRequest(
-      tipe: type,
-      id: id,
-      jumlah: (current?.jumlah ?? 0) + amount,
-    );
+    if (limit != null) _limits[key] = limit;
+    final maximum = _limits[key];
+    final next = (quantity(type, id) + amount).clamp(0, maximum ?? 1 << 30);
+    if (next == 0) return;
+    _items[key] = ItemTransaksiRequest(tipe: type, id: id, jumlah: next);
     if (price != null) _prices[key] = price;
     notifyListeners();
   }
 
   void setQuantity(String type, int id, int quantity) {
     final key = '$type:$id';
-    if (quantity < 1) {
+    final maximum = _limits[key];
+    final next = quantity.clamp(0, maximum ?? 1 << 30);
+    if (next < 1) {
       _items.remove(key);
     } else {
-      _items[key] = ItemTransaksiRequest(tipe: type, id: id, jumlah: quantity);
+      _items[key] = ItemTransaksiRequest(tipe: type, id: id, jumlah: next);
     }
     notifyListeners();
   }
@@ -55,9 +76,12 @@ class DraftCartController extends ChangeNotifier {
   }
 
   void clear() {
-    if (_items.isEmpty) return;
+    if (_items.isEmpty && customerName.isEmpty && plateNumber.isEmpty) return;
     _items.clear();
     _prices.clear();
+    _limits.clear();
+    customerName = '';
+    plateNumber = '';
     notifyListeners();
   }
 }

@@ -344,6 +344,17 @@ persetujuan halaman.
 
 ---
 
+## T-31: Kasir dan perubahan navigasi
+**Status:** belum dicentang
+
+- Tambah tab Kasir untuk admin dan mekanik.
+- Pindahkan Katalog menjadi layar admin tanpa navigasi bawah.
+- Simpan keranjang di Provider dan gunakan QtyStepper dengan batas stok.
+- Perbarui alur Transaksi Baru, Draft Saya, dan hasil diagnosis agar membuka Kasir.
+- Pastikan layout, dokumentasi, analyze, dan test tetap bersih.
+
+---
+
 # BAGIAN B: BACKEND (folder `bengkelpintar_api\` dan `bengkelpintar_backend\`)
 
 Tugas `B-01` sampai `B-12` tidak menyentuh folder Flutter. Tugas `B-13` sampai `B-16` menyambungkan Flutter ke server dan **hanya boleh mengubah `bengkelpintar\lib\services\` dan satu baris di `main.dart`**, bukan layar.

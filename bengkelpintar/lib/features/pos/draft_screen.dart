@@ -50,6 +50,8 @@ class _DraftScreenState extends State<DraftScreen> {
 
   bool get _isAdmin => context.read<RoleProvider?>()?.role == UserRole.admin;
   bool get _isFinal => _transaction.status != 'draft';
+  String get _customerDisplay =>
+      _customer.text.trim().isEmpty ? 'Pelanggan Umum' : _customer.text.trim();
 
   @override
   void initState() {
@@ -71,6 +73,11 @@ class _DraftScreenState extends State<DraftScreen> {
     _items.addAll(_transaction.items);
     _customer = TextEditingController(text: _transaction.namaPelanggan);
     _plate = TextEditingController(text: _transaction.platNomor);
+    final cart = context.read<DraftCartController?>();
+    if (_transaction.id == 0 && cart != null) {
+      _customer.text = cart.customerName;
+      _plate.text = cart.plateNumber;
+    }
     if (widget.initialItem != null || widget.initialItems != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _loadInitialItem());
     }
@@ -222,45 +229,8 @@ class _DraftScreenState extends State<DraftScreen> {
     }
   }
 
-  Future<void> _addItem() async {
-    final productService = context.read<ProdukService>();
-    final serviceService = context.read<JasaService>();
-    final products = await productService.listProducts();
-    final services = await serviceService.listServices();
-    if (!mounted) return;
-    final choice = await showModalBottomSheet<ItemTransaksiRequest>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => AppSheetPadding(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            const Text('Tambah Item', style: AppText.heading),
-            for (final item in products.where((item) => item.aktif))
-              _PickerRow(
-                title: item.nama,
-                subtitle: '${formatRupiah(item.harga)} · Stok ${item.stok}',
-                icon: AppIcons.inventory,
-                onTap: () => Navigator.pop(
-                  context,
-                  ItemTransaksiRequest(tipe: 'produk', id: item.id, jumlah: 1),
-                ),
-              ),
-            for (final item in services.where((item) => item.aktif))
-              _PickerRow(
-                title: item.nama,
-                subtitle: formatRupiah(item.harga),
-                icon: AppIcons.handyman,
-                onTap: () => Navigator.pop(
-                  context,
-                  ItemTransaksiRequest(tipe: 'jasa', id: item.id, jumlah: 1),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-    if (choice != null && mounted) _addRequest(choice, products, services);
+  void _addItem() {
+    Navigator.pushNamed(context, AppRoutes.cashier);
   }
 
   void _changeQuantity(ItemTransaksi item, int quantity) {
@@ -279,6 +249,14 @@ class _DraftScreenState extends State<DraftScreen> {
   }
 
   Future<void> _save() async {
+    final customer = _customer.text.trim().isEmpty
+        ? 'Pelanggan Umum'
+        : _customer.text.trim();
+    final plate = _plate.text.trim();
+    context.read<DraftCartController?>()?.setCustomer(
+      name: customer,
+      plate: plate,
+    );
     setState(() => _saving = true);
     try {
       final requests = _items
@@ -293,8 +271,8 @@ class _DraftScreenState extends State<DraftScreen> {
       final service = context.read<TransaksiService>();
       _transaction = _transaction.id == 0
           ? await service.createDraft(
-              namaPelanggan: _customer.text.trim(),
-              platNomor: _plate.text.trim(),
+              namaPelanggan: customer,
+              platNomor: plate,
               items: requests,
             )
           : await service.updateDraft(_copyTransaction());
@@ -309,6 +287,7 @@ class _DraftScreenState extends State<DraftScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Draft transaksi disimpan.')),
         );
+        context.read<DraftCartController?>()?.clear();
         Navigator.pop(context, _transaction);
       }
     } catch (error) {
@@ -328,7 +307,9 @@ class _DraftScreenState extends State<DraftScreen> {
     id: _transaction.id,
     nomor: _transaction.nomor,
     status: _transaction.status,
-    namaPelanggan: _customer.text.trim(),
+    namaPelanggan: _customer.text.trim().isEmpty
+        ? 'Pelanggan Umum'
+        : _customer.text.trim(),
     platNomor: _plate.text.trim(),
     total: _total,
     dibuatOleh: _transaction.dibuatOleh,
@@ -359,35 +340,10 @@ class _DraftScreenState extends State<DraftScreen> {
             ),
             children: [
               ListCard(
-                title: 'Data pelanggan',
-                footer: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Nama Pelanggan',
-                      style: AppText.label.copyWith(color: AppColors.textBody),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    TextField(
-                      controller: _customer,
-                      enabled: !_isFinal,
-                      decoration: const InputDecoration(
-                        hintText: 'Nama Pelanggan',
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      'Plat Nomor',
-                      style: AppText.label.copyWith(color: AppColors.textBody),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    TextField(
-                      controller: _plate,
-                      enabled: !_isFinal,
-                      decoration: const InputDecoration(hintText: 'Plat Nomor'),
-                    ),
-                  ],
-                ),
+                title: _customerDisplay,
+                subtitle: _plate.text.trim().isEmpty
+                    ? null
+                    : _plate.text.trim(),
               ),
               if (_transaction.riwayatDiagnosisId != null)
                 Padding(
@@ -400,7 +356,7 @@ class _DraftScreenState extends State<DraftScreen> {
               const SizedBox(height: AppSpacing.lg),
               if (!_isFinal)
                 AppButton.tonal(
-                  label: 'Tambah item',
+                  label: 'Tambah item lagi',
                   icon: AppIcons.add,
                   onPressed: _addItem,
                 ),
@@ -494,27 +450,5 @@ class _DraftScreenState extends State<DraftScreen> {
           ),
       ],
     ),
-  );
-}
-
-class _PickerRow extends StatelessWidget {
-  const _PickerRow({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.onTap,
-  });
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-    leading: Icon(icon, color: AppColors.primary),
-    title: Text(title),
-    subtitle: Text(subtitle),
-    trailing: const Icon(AppIcons.addRounded),
-    onTap: onTap,
   );
 }

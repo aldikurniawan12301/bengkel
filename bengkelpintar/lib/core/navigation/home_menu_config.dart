@@ -12,19 +12,16 @@ abstract final class HomeMenuConfig {
   static List<HomeMenuItem> forRole(UserRole role) {
     if (role == UserRole.admin) {
       return const [
-        HomeMenuItem(label: 'Diagnosis', route: AppRoutes.diagnosis),
-        HomeMenuItem(label: 'Transaksi', route: AppRoutes.transactions),
-        HomeMenuItem(label: 'Produk', route: AppRoutes.productCatalog),
-        HomeMenuItem(label: 'Jasa', route: AppRoutes.serviceCatalog),
+        HomeMenuItem(label: 'Katalog', route: AppRoutes.productCatalog),
         HomeMenuItem(label: 'Laporan', route: AppRoutes.reports),
         HomeMenuItem(label: 'Pengguna', route: AppRoutes.manageUsers),
         HomeMenuItem(label: 'Data Master', route: AppRoutes.dataMaster),
+        HomeMenuItem(label: 'Kategori', route: AppRoutes.categoryList),
+        HomeMenuItem(label: 'Pengaturan', route: AppRoutes.workshopSettings),
       ];
     }
     return const [
-      HomeMenuItem(label: 'Diagnosis', route: AppRoutes.diagnosis),
-      HomeMenuItem(label: 'Riwayat', route: AppRoutes.history),
-      HomeMenuItem(label: 'Draft', route: AppRoutes.draft),
+      HomeMenuItem(label: 'Draft Saya', route: AppRoutes.transactions),
     ];
   }
 
@@ -34,14 +31,14 @@ abstract final class HomeMenuConfig {
             HomeMenuItem(label: 'Beranda', route: AppRoutes.home),
             HomeMenuItem(label: 'Transaksi', route: AppRoutes.transactions),
             HomeMenuItem(label: 'Diagnosis', route: AppRoutes.diagnosis),
-            HomeMenuItem(label: 'Katalog', route: AppRoutes.productCatalog),
+            HomeMenuItem(label: 'Kasir', route: AppRoutes.cashier),
             HomeMenuItem(label: 'Profil', route: AppRoutes.profile),
           ]
         : const [
             HomeMenuItem(label: 'Beranda', route: AppRoutes.home),
             HomeMenuItem(label: 'Riwayat', route: AppRoutes.history),
             HomeMenuItem(label: 'Diagnosis', route: AppRoutes.diagnosis),
-            HomeMenuItem(label: 'Draft', route: AppRoutes.draft),
+            HomeMenuItem(label: 'Kasir', route: AppRoutes.cashier),
             HomeMenuItem(label: 'Profil', route: AppRoutes.profile),
           ];
   }

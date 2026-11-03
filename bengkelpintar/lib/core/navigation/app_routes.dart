@@ -9,6 +9,7 @@ abstract final class AppRoutes {
   static const history = '/history';
   static const transactions = '/transactions';
   static const draft = '/draft';
+  static const cashier = '/cashier';
   static const finalize = '/finalize';
   static const receipt = '/receipt';
   static const productCatalog = '/catalog/products';
@@ -44,6 +45,7 @@ abstract final class AppRoutes {
     history: 'Riwayat Diagnosis',
     transactions: 'Transaksi',
     draft: 'Draft Transaksi',
+    cashier: 'Kasir',
     finalize: 'Finalisasi dan Nota',
     productCatalog: 'Produk',
     serviceCatalog: 'Jasa',

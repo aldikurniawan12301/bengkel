@@ -5,9 +5,6 @@ import '../../core/theme/app_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/navigation/app_routes.dart';
-import '../../core/navigation/home_menu_config.dart';
-import '../../core/pos/draft_cart_controller.dart';
-import '../../core/role/role_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text.dart';
@@ -18,10 +15,10 @@ import '../../core/widgets/app_search_bar.dart';
 import '../../core/widgets/blue_header.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/category_icon.dart';
-import '../../core/widgets/circle_icon_button.dart';
-import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/error_state.dart';
-import '../../core/widgets/floating_nav_bar.dart';
+import '../../core/widgets/circle_icon_button.dart';
+import '../../core/role/role_provider.dart';
+import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/loading_skeleton.dart';
 import '../../core/widgets/status_badge.dart';
 import '../../services/service_interfaces.dart';
@@ -37,25 +34,19 @@ class CatalogScreen extends StatefulWidget {
 
 class _CatalogScreenState extends State<CatalogScreen> {
   late Future<List<dynamic>> _future;
-  late final DraftCartController _fallbackCart;
   String _query = '';
   String _category = 'Semua';
 
   @override
   void initState() {
     super.initState();
-    _fallbackCart = DraftCartController();
     _reload();
   }
 
   @override
   void dispose() {
-    _fallbackCart.dispose();
     super.dispose();
   }
-
-  DraftCartController _cart(BuildContext context) =>
-      context.read<DraftCartController?>() ?? _fallbackCart;
 
   void _reload() {
     _future = widget.services
@@ -63,204 +54,127 @@ class _CatalogScreenState extends State<CatalogScreen> {
         : context.read<ProdukService>().listProducts(query: _query);
   }
 
-  void _setQuantity(String type, int id, int quantity) {
-    _cart(context).setQuantity(type, id, quantity);
-    if (context.read<DraftCartController?>() == null) setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final role = context.read<RoleProvider?>()?.role ?? UserRole.admin;
-    final nav = HomeMenuConfig.bottomNavigationFor(role);
-    final cart = context.watch<DraftCartController?>() ?? _fallbackCart;
     return AppScaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
+      body: Column(
         children: [
-          Column(
-            children: [
-              BlueHeader(
-                title: 'Katalog',
-                type: BlueHeaderType.h4,
-                action: role == UserRole.admin
-                    ? CircleIconButton(
-                        onPressed: () => Navigator.pushNamed(
-                          context,
-                          widget.services
-                              ? AppRoutes.serviceForm
-                              : AppRoutes.productForm,
-                        ).then((_) => setState(_reload)),
-                        tooltip:
-                            'Tambah ${widget.services ? 'jasa' : 'produk'}',
-                        icon: AppIcons.addRounded,
-                        medium: true,
-                        onHeader: true,
-                      )
-                    : null,
-              ),
-              Expanded(
-                child: FutureBuilder<List<dynamic>>(
-                  future: _future,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const LoadingSkeleton();
-                    }
-                    if (snapshot.hasError) {
-                      return ErrorState(
-                        message: 'Katalog belum dapat dimuat.',
-                        onRetry: () => setState(_reload),
-                      );
-                    }
-                    final raw = snapshot.data ?? const <dynamic>[];
-                    final items = raw.where((item) {
-                      if (item.aktif != true) return false;
-                      if (widget.services || _category == 'Semua') return true;
-                      return item.kategoriNama == _category;
-                    }).toList();
-                    if (items.isEmpty) {
-                      return EmptyState(
+          BlueHeader(
+            title: 'Katalog',
+            type: BlueHeaderType.h4,
+            onBack: () => Navigator.maybePop(context),
+            action: role == UserRole.admin
+                ? CircleIconButton(
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      widget.services
+                          ? AppRoutes.serviceForm
+                          : AppRoutes.productForm,
+                    ).then((_) => setState(_reload)),
+                    tooltip: 'Tambah ${widget.services ? 'jasa' : 'produk'}',
+                    icon: AppIcons.addRounded,
+                    medium: true,
+                    onHeader: true,
+                  )
+                : null,
+          ),
+          Expanded(
+            child: FutureBuilder<List<dynamic>>(
+              future: _future,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const LoadingSkeleton();
+                }
+                if (snapshot.hasError) {
+                  return ErrorState(
+                    message: 'Katalog belum dapat dimuat.',
+                    onRetry: () => setState(_reload),
+                  );
+                }
+                final raw = snapshot.data ?? const <dynamic>[];
+                final items = raw.where((item) {
+                  if (item.aktif != true) return false;
+                  if (widget.services || _category == 'Semua') return true;
+                  return item.kategoriNama == _category;
+                }).toList();
+                return ListView(
+                  padding: AppInsets.page(
+                    context,
+                    top: AppSpacing.contentTopGap,
+                    bottom: AppSpacing.xl,
+                  ),
+                  children: [
+                    _SegmentedCatalogControl(
+                      services: widget.services,
+                      onChanged: (services) => Navigator.pushReplacementNamed(
+                        context,
+                        services
+                            ? AppRoutes.serviceCatalog
+                            : AppRoutes.productCatalog,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    AppSearchBar(
+                      hintText: widget.services ? 'Cari jasa' : 'Cari produk',
+                      onChanged: (value) => setState(() {
+                        _query = value;
+                        _reload();
+                      }),
+                    ),
+                    if (!widget.services) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      _CategoryFilter(
+                        selected: _category,
+                        items: [
+                          'Semua',
+                          ...{
+                            for (final item in raw)
+                              if (item.aktif == true) item.kategoriNama,
+                          },
+                        ],
+                        onChanged: (value) => setState(() => _category = value),
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.md),
+                    if (items.isEmpty)
+                      EmptyState(
                         title: widget.services
                             ? 'Belum ada jasa'
                             : 'Belum ada produk',
                         message:
                             'Coba kata kunci lain atau tambahkan data baru.',
-                      );
-                    }
-                    return ListView(
-                      padding: EdgeInsets.fromLTRB(
-                        AppSpacing.pageMargin,
-                        0,
-                        AppSpacing.pageMargin,
-                        cart.isEmpty
-                            ? AppSpacing.bottomBarClearance
-                            : AppSpacing.bottomBarClearance + 72,
-                      ),
-                      children: [
-                        const SizedBox(height: AppSpacing.contentTopGap),
+                      )
+                    else
+                      for (final item in items)
                         Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                          child: _SegmentedCatalogControl(
-                            services: widget.services,
-                            onChanged: (services) =>
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  services
-                                      ? AppRoutes.serviceCatalog
-                                      : AppRoutes.productCatalog,
-                                ),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                          child: _CatalogRow(
+                            name: item.nama,
+                            price: item.harga,
+                            category: widget.services
+                                ? null
+                                : item.kategoriNama,
+                            service: widget.services,
+                            quantity: 0,
+                            stock: widget.services ? null : item.stok,
+                            lowStock:
+                                !widget.services &&
+                                item.stok <= item.stokMinimum,
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              widget.services
+                                  ? AppRoutes.serviceForm
+                                  : AppRoutes.productDetail,
+                              arguments: item,
+                            ),
+                            onAdd: null,
+                            onQuantityChanged: (_) {},
                           ),
                         ),
-                        AppSearchBar(
-                          hintText: widget.services
-                              ? 'Cari jasa'
-                              : 'Cari produk',
-                          onChanged: (value) => setState(() {
-                            _query = value;
-                            _reload();
-                          }),
-                        ),
-                        if (!widget.services) ...[
-                          const SizedBox(height: AppSpacing.md),
-                          _CategoryFilter(
-                            selected: _category,
-                            items: [
-                              'Semua',
-                              ...{
-                                for (final item in raw)
-                                  if (item.aktif == true) item.kategoriNama,
-                              },
-                            ],
-                            onChanged: (value) =>
-                                setState(() => _category = value),
-                          ),
-                        ],
-                        const SizedBox(height: AppSpacing.md),
-                        if (widget.services)
-                          for (final item in items)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: AppSpacing.sm,
-                              ),
-                              child: _CatalogRow(
-                                name: item.nama,
-                                price: item.harga,
-                                category: null,
-                                service: true,
-                                quantity: cart.quantity('jasa', item.id),
-                                stock: null,
-                                lowStock: false,
-                                onTap: role == UserRole.admin
-                                    ? () => Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.serviceForm,
-                                        arguments: item,
-                                      )
-                                    : null,
-                                onAdd: null,
-                                onQuantityChanged: (quantity) =>
-                                    _setQuantity('jasa', item.id, quantity),
-                              ),
-                            ),
-                        if (!widget.services)
-                          for (final item in items)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: AppSpacing.sm,
-                              ),
-                              child: _CatalogRow(
-                                name: item.nama,
-                                price: item.harga,
-                                category: item.kategoriNama,
-                                service: false,
-                                quantity: cart.quantity('produk', item.id),
-                                stock: item.stok,
-                                lowStock: item.stok <= item.stokMinimum,
-                                onTap: role == UserRole.admin
-                                    ? () => Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.productDetail,
-                                        arguments: item,
-                                      )
-                                    : null,
-                                onAdd: null,
-                                onQuantityChanged: (_) {},
-                              ),
-                            ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-          if (!cart.isEmpty)
-            Positioned(
-              left: AppSpacing.pageMargin,
-              right: AppSpacing.pageMargin,
-              bottom:
-                  AppSpacing.navContentHeight +
-                  MediaQuery.paddingOf(context).bottom +
-                  AppSpacing.sm,
-              child: _CartSummary(
-                count: cart.itemCount,
-                total: _cartTotal(cart),
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.draft,
-                  arguments: cart.requests,
-                ),
-              ),
-            ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: FloatingNavBar(
-              items: [for (final item in nav) item.label],
-              selectedIndex: 3,
-              onSelected: (index) {
-                final route = nav[index].route;
-                if (route != AppRoutes.productCatalog) {
-                  Navigator.pushReplacementNamed(context, route);
-                }
+                  ],
+                );
               },
             ),
           ),
@@ -268,12 +182,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
       ),
     );
   }
-
-  int _cartTotal(DraftCartController cart) => cart.requests.fold(
-    0,
-    (sum, request) =>
-        sum + cart.price(request.tipe, request.id) * request.jumlah,
-  );
 }
 
 class _SegmentedCatalogControl extends StatelessWidget {
@@ -418,51 +326,6 @@ class _CatalogRow extends StatelessWidget {
               size: AppSpacing.iconSmall,
               color: AppColors.textMuted,
             ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-class _CartSummary extends StatelessWidget {
-  const _CartSummary({
-    required this.count,
-    required this.total,
-    required this.onTap,
-  });
-  final int count;
-  final int total;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => Material(
-    color: AppColors.navy,
-    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.sm,
-        ),
-        child: Row(
-          children: [
-            const Icon(AppIcons.roundedShoppingCart, color: AppColors.surface),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                '$count item · ${formatRupiah(total)}',
-                style: AppText.body.copyWith(color: AppColors.surface),
-              ),
-            ),
-            Text(
-              'Lihat Draft',
-              style: AppText.label.copyWith(color: AppColors.surface),
-            ),
-            const SizedBox(width: AppSpacing.xs),
-            const Icon(AppIcons.chevronRight, color: AppColors.surface),
           ],
         ),
       ),
