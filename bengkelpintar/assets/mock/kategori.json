@@ -1,0 +1,8 @@
+[
+  {"id":1,"nama":"Pengapian","aktif":true},
+  {"id":2,"nama":"Pelumas","aktif":true},
+  {"id":3,"nama":"Rem","aktif":true},
+  {"id":4,"nama":"Transmisi","aktif":true},
+  {"id":5,"nama":"Kelistrikan","aktif":true},
+  {"id":6,"nama":"Filter","aktif":true}
+]

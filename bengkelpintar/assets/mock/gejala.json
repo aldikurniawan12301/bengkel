@@ -1,0 +1,20 @@
+[
+  {"id":1,"kode":"G01","nama":"Mesin susah dihidupkan","kategori":"Mesin","aktif":true},
+  {"id":2,"kode":"G02","nama":"Mesin mati mendadak","kategori":"Mesin","aktif":true},
+  {"id":3,"kode":"G03","nama":"Tarikan berat","kategori":"Mesin","aktif":true},
+  {"id":4,"kode":"G04","nama":"Knalpot berasap putih","kategori":"Mesin","aktif":true},
+  {"id":5,"kode":"G05","nama":"Knalpot berasap hitam","kategori":"Mesin","aktif":true},
+  {"id":6,"kode":"G06","nama":"Suara mesin kasar","kategori":"Mesin","aktif":true},
+  {"id":7,"kode":"G07","nama":"Lampu redup","kategori":"Kelistrikan","aktif":true},
+  {"id":8,"kode":"G08","nama":"Klakson lemah atau mati","kategori":"Kelistrikan","aktif":true},
+  {"id":9,"kode":"G09","nama":"Boros bensin","kategori":"Mesin","aktif":true},
+  {"id":10,"kode":"G10","nama":"Rem kurang pakem","kategori":"Rem","aktif":true},
+  {"id":11,"kode":"G11","nama":"Rantai berisik","kategori":"Transmisi","aktif":true},
+  {"id":12,"kode":"G12","nama":"Kopling selip","kategori":"Transmisi","aktif":true},
+  {"id":13,"kode":"G13","nama":"Getaran berlebih di stang","kategori":"Transmisi","aktif":true},
+  {"id":14,"kode":"G14","nama":"Mesin overheat","kategori":"Mesin","aktif":true},
+  {"id":15,"kode":"G15","nama":"Bunyi ketukan di mesin","kategori":"Mesin","aktif":true},
+  {"id":16,"kode":"G16","nama":"Starter elektrik tidak berfungsi","kategori":"Kelistrikan","aktif":true},
+  {"id":17,"kode":"G17","nama":"Oli cepat habis","kategori":"Mesin","aktif":true},
+  {"id":18,"kode":"G18","nama":"Putaran gas tidak stabil","kategori":"Mesin","aktif":true}
+]

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirrors AppColors.primary; Android resources cannot import Dart tokens. -->
+    <color name="splash_background">#2457E6</color>
+	<color name="ic_launcher_background">#2457E6</color>
+</resources>

@@ -1,0 +1,27 @@
+[
+  {
+    "id":31,
+    "pengguna_id":2,
+    "pengguna_nama":"Budi Santoso",
+    "gejala":[
+      {"id":1,"kode":"G01","nama":"Mesin susah dihidupkan","kategori":"Mesin","aktif":true},
+      {"id":3,"kode":"G03","nama":"Tarikan berat","kategori":"Mesin","aktif":true},
+      {"id":4,"kode":"G04","nama":"Knalpot berasap putih","kategori":"Mesin","aktif":true}
+    ],
+    "hasil":{
+      "riwayat_id":31,
+      "kerusakan_utama":{"id":1,"nama":"Busi kotor / aus","keyakinan":0.78},
+      "kemungkinan_lain":[{"id":2,"nama":"Karburator kotor","keyakinan":0.15},{"id":3,"nama":"Aki lemah","keyakinan":0.07}],
+      "urgensi":"sedang",
+      "urgensi_keterangan":"Masih bisa dipakai, segera cek",
+      "solusi":"Bersihkan atau ganti busi",
+      "estimasi_waktu_menit":15,
+      "komponen_terkait":[{"produk_id":1,"nama":"Busi NGK Standar","harga":25000},{"produk_id":2,"nama":"Kabel Busi","harga":35000}],
+      "jasa_terkait":[{"jasa_id":1,"nama":"Ganti busi","harga":20000}],
+       "estimasi_biaya":{"min":30000,"max":80000,"keterangan":"Perkiraan"},
+      "waktu":"2026-10-24T10:15:00"
+    },
+    "keyakinan":0.78,
+    "waktu":"2026-10-24T10:15:00"
+  }
+]

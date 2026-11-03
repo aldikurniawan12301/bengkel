@@ -1,0 +1,11 @@
+[
+  {"id":1,"nama":"Ganti busi","harga":20000,"aktif":true},
+  {"id":2,"nama":"Ganti oli","harga":10000,"aktif":true},
+  {"id":3,"nama":"Ganti kampas rem","harga":25000,"aktif":true},
+  {"id":4,"nama":"Ganti aki","harga":15000,"aktif":true},
+  {"id":5,"nama":"Cek kelistrikan","harga":30000,"aktif":true},
+  {"id":6,"nama":"Ganti rantai dan gear","harga":50000,"aktif":true},
+  {"id":7,"nama":"Servis karburator","harga":60000,"aktif":true},
+  {"id":8,"nama":"Ganti kampas kopling","harga":80000,"aktif":true},
+  {"id":9,"nama":"Tune up","harga":75000,"aktif":true}
+]

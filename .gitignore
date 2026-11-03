@@ -1,0 +1,38 @@
+# Dart and Flutter generated files
+**/.dart_tool/
+**/build/
+**/.packages
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+
+# Android local configuration and signing material
+**/local.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+
+# Environment files and credentials
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+**/*credentials*
+**/*credential*
+**/*secret*
+**/*secrets*
+**/service-account*.json
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.crt
+
+# Serialized ML models can be large or contain sensitive data
+**/*.pkl
+
+# Local agent indexes and IDE metadata
+**/.codebase-memory/
+**/.idea/

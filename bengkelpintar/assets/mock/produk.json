@@ -1,0 +1,14 @@
+[
+  {"id":1,"nama":"Busi NGK Standar","kategori_id":1,"kategori_nama":"Pengapian","harga":25000,"stok":4,"stok_minimum":5,"aktif":true},
+  {"id":2,"nama":"Kabel Busi","kategori_id":1,"kategori_nama":"Pengapian","harga":35000,"stok":12,"stok_minimum":2,"aktif":true},
+  {"id":3,"nama":"Koil Pengapian","kategori_id":1,"kategori_nama":"Pengapian","harga":95000,"stok":6,"stok_minimum":2,"aktif":true},
+  {"id":4,"nama":"CDI","kategori_id":5,"kategori_nama":"Kelistrikan","harga":180000,"stok":3,"stok_minimum":5,"aktif":true},
+  {"id":5,"nama":"Aki 12V","kategori_id":5,"kategori_nama":"Kelistrikan","harga":280000,"stok":5,"stok_minimum":2,"aktif":true},
+  {"id":6,"nama":"Lampu Depan","kategori_id":5,"kategori_nama":"Kelistrikan","harga":35000,"stok":15,"stok_minimum":2,"aktif":true},
+  {"id":7,"nama":"Oli Mesin 1 Liter","kategori_id":2,"kategori_nama":"Pelumas","harga":55000,"stok":20,"stok_minimum":2,"aktif":true},
+  {"id":8,"nama":"Filter Udara","kategori_id":6,"kategori_nama":"Filter","harga":40000,"stok":10,"stok_minimum":2,"aktif":true},
+  {"id":9,"nama":"Kampas Rem Depan","kategori_id":3,"kategori_nama":"Rem","harga":45000,"stok":8,"stok_minimum":2,"aktif":true},
+  {"id":10,"nama":"Kampas Rem Belakang","kategori_id":3,"kategori_nama":"Rem","harga":40000,"stok":0,"stok_minimum":5,"aktif":true},
+  {"id":11,"nama":"Kampas Kopling Set","kategori_id":4,"kategori_nama":"Transmisi","harga":120000,"stok":4,"stok_minimum":2,"aktif":true},
+  {"id":12,"nama":"Set Rantai dan Gear","kategori_id":4,"kategori_nama":"Transmisi","harga":250000,"stok":3,"stok_minimum":2,"aktif":true}
+]

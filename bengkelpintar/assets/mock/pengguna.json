@@ -1,0 +1,5 @@
+[
+  {"id":1,"nama":"Andi Pratama","peran":"admin","username":"admin","aktif":true},
+  {"id":2,"nama":"Budi Santoso","peran":"mekanik","username":"budi","aktif":true},
+  {"id":3,"nama":"Rina Wulandari","peran":"mekanik","username":"rina","aktif":true}
+]
