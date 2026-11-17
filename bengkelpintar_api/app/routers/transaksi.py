@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timezone
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -223,7 +224,7 @@ def finalisasi(
 
     if kebutuhan:
         produk = db.scalars(
-            select(Produk).where(Produk.id.in_(kebutuhan)).order_by(Produk.id).with_for_update()
+            select(Produk).where(Produk.id.in_(kebutuhan)).with_for_update()
         ).all()
         kurang = [
             f"{p.nama} (tersedia {p.stok}, dibutuhkan {kebutuhan[p.id]})"
@@ -251,7 +252,7 @@ def finalisasi(
     t.metode_bayar = data.metode_bayar
     t.jumlah_dibayar = data.jumlah_dibayar
     t.difinalkan_oleh = admin.id
-    t.waktu_final = func.now()
+    t.waktu_final = datetime.now(timezone.utc)
     db.commit()
     return _keluar(_ambil_terlihat(db, transaksi_id, admin))
 

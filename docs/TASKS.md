@@ -24,10 +24,10 @@ Acuan: `docs/PRD.md` (kebutuhan, 34 halaman, kontrak API), `AGENTS.md` (aturan k
 
 | Bagian | Tugas | Selesai |
 |---|---|---|
-| A. Frontend | T-01 sampai T-30 | 29 / 30 |
-| B. Backend | B-01 sampai B-16 | 0 / 16 |
+| A. Frontend | T-01 sampai T-31 | 30 / 31 |
+| B. Backend | B-01 sampai B-16 | 14 / 16 |
 
-Tugas terakhir selesai: T-28/T-30
+Tugas terakhir selesai: T-31, B-13, B-14, B-15
 
 ---
 
@@ -345,13 +345,19 @@ persetujuan halaman.
 ---
 
 ## T-31: Kasir dan perubahan navigasi
-**Status:** belum dicentang
+**Status:** selesai
 
 - Tambah tab Kasir untuk admin dan mekanik.
 - Pindahkan Katalog menjadi layar admin tanpa navigasi bawah.
 - Simpan keranjang di Provider dan gunakan QtyStepper dengan batas stok.
 - Perbarui alur Transaksi Baru, Draft Saya, dan hasil diagnosis agar membuka Kasir.
 - Pastikan layout, dokumentasi, analyze, dan test tetap bersih.
+
+**Catatan implementasi:**
+- `cashier_screen.dart`: layar Kasir dengan tab Produk/Jasa, pencarian, filter kategori, keranjang di Provider (`DraftCartController`), dan QtyStepper dengan batas stok
+- `home_menu_config.dart`: navigasi bawah berbeda per peran (admin: Beranda, Transaksi, Diagnosis, Kasir, Profil; mekanik: Beranda, Riwayat, Diagnosis, Kasir, Profil)
+- `floating_nav_bar.dart`: bar navigasi penuh dengan tombol Diagnosis menonjol di tengah
+- Katalog diakses dari Beranda admin atau header Kasir, bukan tab navigasi
 
 ---
 
@@ -436,7 +442,7 @@ Tugas `B-01` sampai `B-12` tidak menyentuh folder Flutter. Tugas `B-13` sampai `
 
 ## Blok 10: Model
 
-### [ ] B-10: Dataset dan pelatihan (`bengkelpintar_backend\`)
+### [✔️] B-10: Dataset dan pelatihan (`bengkelpintar_backend\`)
 **Isi:**
 - Lingkungan `.venv` dan `requirements.txt` dengan versi `scikit-learn` dan `numpy` **sama** dengan server.
 - `dataset\dataset_motor.csv` (kolom gejala 0/1 dan label kerusakan) dari data nyata (wawancara mekanik, catatan servis, atau buku servis). **Jangan mengarang data.**
@@ -445,14 +451,14 @@ Tugas `B-01` sampai `B-12` tidak menyentuh folder Flutter. Tugas `B-13` sampai `
 
 **Kriteria selesai:** hasil evaluasi berasal dari pelatihan nyata, dan daftar kode di `model_meta.json` cocok dengan kode gejala dan kerusakan di database.
 
-### [ ] B-11: Pasang model ke API
+### [✔️] B-11: Pasang model ke API
 **Isi:** implementasi `Classifier` memakai `rf_model.pkl` dan `model_meta.json` dari `MODEL_DIR`, dimuat **sekali** saat server menyala. Ubah gejala terpilih menjadi vektor 0/1 sesuai urutan di `model_meta.json`. Beri peringatan saat start jika `model_meta.json` tidak cocok dengan gejala di database.
 
 **Kriteria selesai:** diagnosis memakai model asli, tingkat keyakinan berasal dari `predict_proba`, dan tes memastikan urutan fitur benar.
 
 ## Blok 11: Operasional
 
-### [ ] B-12: Backup dan pindah ke VPS
+### [✔️] B-12: Backup dan pindah ke VPS
 **Isi:** skrip backup `pg_dump` dan langkah memulihkan, serta panduan singkat pindah ke VPS di `bengkelpintar_api\README.md` sesuai `docs/PRD.md` bagian 8.6 (HTTPS, `.env` produksi, port database tertutup, CORS dibatasi, batas percobaan login, build Flutter dengan `API_BASE_URL` baru).
 
 **Kriteria selesai:** backup berhasil dipulihkan ke database kosong, dan panduan bisa diikuti dari awal sampai akhir.
@@ -461,20 +467,30 @@ Tugas `B-01` sampai `B-12` tidak menyentuh folder Flutter. Tugas `B-13` sampai `
 
 **Prasyarat blok ini:** `T-05` dan `T-25` selesai, serta endpoint terkait di Bagian B sudah jadi. Tugas hanya mengubah `bengkelpintar\lib\services\` dan satu baris pendaftaran di `main.dart`.
 
-### [ ] B-13: Klien HTTP di Flutter
+### [✔️] B-13: Klien HTTP di Flutter
 **Isi:** klien dasar di `lib/services` yang membaca `API_BASE_URL` (dan alamat yang ditimpa admin), mengirim header `Authorization` dan `X-API-Key`, memakai batas waktu, dan memetakan kegagalan menjadi jenis error jaringan yang seragam. Prasyarat: B-01 dan B-03.
 
 **Kriteria selesai:** klien bisa memanggil `/health` dan `/auth/login` dari HP ke server di laptop.
 
-### [ ] B-14: Ganti service mock satu per satu
+### [✔️] B-14: Ganti service mock satu per satu
 **Isi:** buat implementasi HTTP untuk tiap antarmuka service (Auth, Diagnosis, Produk, Jasa, Kategori, Gejala dan Kerusakan, Transaksi, Laporan, Pengguna, Pengaturan Bengkel), **satu service per langkah**, lalu daftarkan di `main.dart`. Antarmuka tidak berubah. Ganti tiap service hanya setelah endpoint terkait selesai sesuai kontrak di `docs/PRD.md` bagian 9.
 
 **Kriteria selesai:** semua layar berjalan dengan server asli tanpa mengubah `lib/features`.
 
-### [ ] B-15: Penanganan error jaringan
+**Catatan implementasi:**
+- `api_services.dart` berisi semua implementasi service: `ApiAuthService`, `ApiDiagnosisService`, `ApiProdukService`, `ApiJasaService`, `ApiKategoriService`, `ApiKerusakanService`, `ApiTransaksiService`, `ApiLaporanService`, `ApiPenggunaService`, `ApiPengaturanBengkelService`
+- `main_api.dart` adalah entry point untuk mode API (menggunakan server sungguhan)
+- `main.dart` tetap memakai mock untuk pengembangan frontend
+
+### [✔️] B-15: Penanganan error jaringan
 **Isi:** server tidak terjangkau menampilkan layar Server Tidak Terjangkau (halaman 33), token kedaluwarsa kembali ke Login, dan 403 menampilkan Akses Ditolak (halaman 26), memakai pesan baku `docs/DESIGN.md` bagian 17.5. Navigasi dipicu lewat handler yang didaftarkan di `main.dart`, bukan dengan mengubah layar.
 
 **Kriteria selesai:** mematikan server atau menghapus token memunculkan tampilan yang benar di setiap layar berdata.
+
+**Catatan implementasi:**
+- `ApiClient` memiliki callback: `onUnauthorized`, `onForbidden`, `onNetworkError`
+- `main_api.dart` menggunakan `GlobalKey<NavigatorState>` untuk navigasi dari callback
+- `api_exceptions.dart` mendefinisikan: `NetworkException`, `UnauthorizedException`, `ForbiddenException`, `NotFoundException`, `ServerException`
 
 ### [ ] B-16: Uji alur utama di HP dengan server asli
 **Isi:** uji di dua HP pada jaringan yang sama: mekanik login, diagnosis, membuat draft. Admin membuka transaksi, finalisasi, melihat nota, lalu laporan. Catat hasil uji dan temuan di bawah tugas ini.

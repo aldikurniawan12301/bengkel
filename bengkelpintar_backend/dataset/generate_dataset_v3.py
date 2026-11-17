@@ -12,16 +12,20 @@ Cara kerja:
 
 Seed tetap -> hasil dapat direproduksi.
 """
-import numpy as np, pandas as pd, sys
+from pathlib import Path
 
+import numpy as np
+import pandas as pd
+
+AKAR = Path(__file__).resolve().parent
 SEED = 20261030
 PER_CLASS_TARGET = 120          # 9 kelas x 120 = 1080 baris
 P_CROSSTALK = 0.15              # ASUMSI, bukan hasil pengukuran
 NOISE_FLOOR = 0.035             # peluang gejala non-khas (ASUMSI, dari kisaran data asli)
 SIGNATURE_MIN = 0.15            # gejala dgn frekuensi asli >= ini dianggap khas kelas
 
-IN = "/mnt/user-data/uploads/"
-OUT = "/mnt/user-data/outputs/"
+IN = AKAR
+OUT = AKAR
 
 # ---- penyesuaian profil yang punya dasar sumber (kode sumber ada di daftar_sumber_v3.csv)
 ADJUST = {
@@ -152,7 +156,8 @@ def main():
     ks, ku = [], []
     for r in k3.itertuples():
         codes = r.kode_sumber.split(";") + add_by_class.get(r.kode_kelas, [])
-        ks.append(";".join(codes)); ku.append("; ".join(url_of[c] for c in codes))
+        ks.append(";".join(codes))
+        ku.append("; ".join(url_of[c] for c in codes))
     k3["kode_sumber"], k3["url_sumber"] = ks, ku
     k3["cakupan"] = k3.kode_kelas.map(lambda k: "hanya matic (CVT)" if k in CVT_CLASSES else "semua motor injeksi")
     k3.to_csv(OUT + "daftar_kelas_v3.csv", index=False)
@@ -163,7 +168,8 @@ def main():
     for r in g3.itertuples():
         codes = r.kode_sumber.split(";") + [new_code[i] for i in SYMPTOM_LINKS.get(r.kode_gejala, [])]
         codes = list(dict.fromkeys(codes))
-        gs.append(";".join(codes)); gu.append("; ".join(url_of[c] for c in codes))
+        gs.append(";".join(codes))
+        gu.append("; ".join(url_of[c] for c in codes))
     g3["kode_sumber"], g3["url_sumber"] = gs, gu
     g3["cakupan"] = g3.kode_gejala.map(lambda x: "hanya matic (CVT)" if x in CVT_SYMPTOMS else "semua motor injeksi")
     g3.to_csv(OUT + "daftar_gejala_v3.csv", index=False)
@@ -179,7 +185,8 @@ def main():
         prof.loc[c, g] = v
 
     # ---------- generator
-    d = d.copy(); d["jenis_motor"] = "motor_injeksi"
+    d = d.copy()
+    d["jenis_motor"] = "motor_injeksi"
     seen = set(d[G].astype(int).astype(str).agg("".join, axis=1))
     new_rows, next_id = [], len(d) + 1
     for c in classes:
@@ -198,18 +205,24 @@ def main():
                 po[v == 1] = 0
                 sig = po * (po >= SIGNATURE_MIN)
                 if sig.sum() > 0:
-                    j = rng.choice(len(G), p=sig / sig.sum()); v[j] = 1; tag = f";overlap={other}"
+                    j = rng.choice(len(G), p=sig / sig.sum())
+                    v[j] = 1
+                    tag = f";overlap={other}"
             while v.sum() < 2:
-                q = p.copy(); q[v == 1] = 0
+                q = p.copy()
+                q[v == 1] = 0
                 v[rng.choice(len(G), p=q / q.sum())] = 1
             key = "".join(map(str, v))
-            if key in seen: continue
-            seen.add(key); made += 1
+            if key in seen:
+                continue
+            seen.add(key)
+            made += 1
             rec = {"id_kasus": f"W{next_id:03d}", "jenis_motor": "motor_injeksi"}
             rec.update({g: int(x) for g, x in zip(G, v)})
             rec.update({"kelas": c, "sumber_data": "WEB_SINTETIS", "status_verifikasi": "belum_diverifikasi",
                         "id_mekanik": np.nan, "tanggal_verifikasi": np.nan, "catatan": "ekspansi_v3" + tag})
-            new_rows.append(rec); next_id += 1
+            new_rows.append(rec)
+            next_id += 1
     out = pd.concat([d, pd.DataFrame(new_rows)], ignore_index=True)[d.columns]
     out.to_csv(OUT + "dataset_v3_motor_injeksi.csv", index=False)
     print("selesai:", out.shape, out["kelas"].value_counts().to_dict())

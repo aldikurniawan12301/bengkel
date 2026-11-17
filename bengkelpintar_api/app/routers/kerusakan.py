@@ -30,10 +30,12 @@ def _keluar(k: Kerusakan) -> KerusakanOut:
         komponen_terkait=[
             KomponenTerkaitOut(produk_id=p.id, nama=p.nama, harga=p.harga)
             for p in sorted(k.komponen, key=lambda x: x.id)
+            if p.aktif
         ],
         jasa_terkait=[
             JasaTerkaitOut(jasa_id=j.id, nama=j.nama, harga=j.harga)
             for j in sorted(k.jasa, key=lambda x: x.id)
+            if j.aktif
         ],
     )
 

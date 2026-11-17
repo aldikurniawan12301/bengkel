@@ -236,7 +236,7 @@ def test_kerusakan_nonaktif_dikeluarkan_dan_probabilitas_dinormalkan(klien):
     h = prediksi(klien, CONTOH_PRD).json()
     nama = [h["kerusakan_utama"]["nama"]] + [k["nama"] for k in h["kemungkinan_lain"]]
     assert "Busi kotor / aus" not in nama and h["kerusakan_utama"]["nama"] == "Karburator kotor"
-    p = dict(zip(at.KODE_KERUSAKAN, at.AturanTiruan().predict_proba(vektor("G01", "G03", "G04"))))
+    p = dict(zip(at.KODE_KERUSAKAN, ambil_pengklasifikasi().predict_proba(vektor("G01", "G03", "G04"))))
     assert h["kerusakan_utama"]["keyakinan"] == round(p["K02"] / (1 - p["K01"]), 2)
     total = h["kerusakan_utama"]["keyakinan"] + sum(k["keyakinan"] for k in h["kemungkinan_lain"])
     assert total <= 1.01

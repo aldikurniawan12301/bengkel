@@ -80,7 +80,10 @@ def statistik_diagnosis(
     nama = RiwayatDiagnosis.hasil["kerusakan_utama"]["nama"].astext
     jumlah = func.count()
     baris = db.execute(
-        select(nama, jumlah).where(nama.is_not(None)).group_by(nama).order_by(jumlah.desc(), nama.asc())
+        select(nama, jumlah)
+        .where(RiwayatDiagnosis.hasil.is_not(None), nama.is_not(None))
+        .group_by(nama)
+        .order_by(jumlah.desc(), nama.asc())
     ).all()
     total = sum(j for _, j in baris)
     return StatistikDiagnosisOut(
