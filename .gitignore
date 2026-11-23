@@ -36,3 +36,8 @@
 # Local agent indexes and IDE metadata
 **/.codebase-memory/
 **/.idea/
+
+# Dokumen dan berkas agen
+AGENTS.md
+agents.md
+docs/
