@@ -390,8 +390,8 @@ class ApiTransaksiService implements TransaksiService {
     int? riwayatDiagnosisId,
   }) async {
     final body = {
-      'nama_pelanggan': namaPelanggan.isEmpty ? null : namaPelanggan,
-      'plat_nomor': platNomor.isEmpty ? null : platNomor,
+      'nama_pelanggan': namaPelanggan,
+      'plat_nomor': platNomor,
       'riwayat_diagnosis_id': riwayatDiagnosisId,
       'items': items.map((i) => i.toJson()).toList(),
     };
@@ -404,11 +404,8 @@ class ApiTransaksiService implements TransaksiService {
   @override
   Future<Transaksi> updateDraft(Transaksi transaction) async {
     final body = {
-      'nama_pelanggan': transaction.namaPelanggan.isEmpty
-          ? null
-          : transaction.namaPelanggan,
-      'plat_nomor':
-          transaction.platNomor.isEmpty ? null : transaction.platNomor,
+      'nama_pelanggan': transaction.namaPelanggan,
+      'plat_nomor': transaction.platNomor,
       'items': transaction.items.map((i) {
         return {
           'tipe': i.tipe,

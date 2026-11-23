@@ -55,12 +55,14 @@ class _SplashScreenState extends State<SplashScreen> {
       await Future<void>.delayed(widget.sessionCheckDelay);
     }
     if (!mounted) return;
+    debugPrint('[BP] 5 setelah delay splash');
     User? user;
     try {
       user = await context.read<AuthService>().currentUser();
     } catch (_) {
       user = null;
     }
+    debugPrint('[BP] 6 currentUser selesai: ${user?.nama}');
     if (!mounted) return;
     final roleProvider = context.read<RoleProvider?>();
     if (user != null && roleProvider != null) {
@@ -70,6 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     final destination = user == null ? AppRoutes.login : AppRoutes.home;
     final role = user?.peran == 'admin' ? UserRole.admin : UserRole.mechanic;
+    debugPrint('[BP] 7 akan pindah ke $destination');
     Navigator.pushReplacement(
       context,
       AppRouter.onGenerateRoute(RouteSettings(name: destination), role),

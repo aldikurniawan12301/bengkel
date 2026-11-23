@@ -1,6 +1,6 @@
 {
   "versi_meta": 1,
-  "dibuat": "2026-11-10 09:20 UTC",
+  "dibuat": "2026-11-22 13:48 UTC",
   "kode_gejala": [
     "G01",
     "G02",
@@ -100,7 +100,7 @@
   "jumlah_latih": 856,
   "jumlah_uji": 214,
   "versi_library": {
-    "python": "3.12.3",
+    "python": "3.13.14",
     "scikit-learn": "1.9.1",
     "numpy": "2.5.4"
   },

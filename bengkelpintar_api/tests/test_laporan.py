@@ -46,31 +46,31 @@ def test_laporan_data_baku_dua_hari(klien):
     assert res.status_code == 200
     isi = res.json()
     assert isi["periode_mulai"] == "2026-10-23" and isi["periode_selesai"] == "2026-10-24"
-    assert isi["total_penjualan"] == 295000 + 300000 + 135000
+    assert isi["total_penjualan"] == 295000 + 170000 + 110000
     assert isi["jumlah_transaksi"] == 3
-    assert isi["rata_rata"] == 243333
+    assert isi["rata_rata"] == 191667
     assert isi["penjualan_per_hari"] == [
-        {"tanggal": "2026-10-23", "total": 595000, "jumlah": 2},
-        {"tanggal": "2026-10-24", "total": 135000, "jumlah": 1},
+        {"tanggal": "2026-10-23", "total": 465000, "jumlah": 2},
+        {"tanggal": "2026-10-24", "total": 110000, "jumlah": 1},
     ]
     assert [(t["tipe"], t["nama"], t["jumlah"], t["total"]) for t in isi["terlaris"]] == [
         ("produk", "Aki 12V", 1, 280000),
-        ("produk", "Set Rantai dan Gear", 1, 250000),
+        ("produk", "V-belt Motor Matic", 1, 85000),
         ("produk", "Oli Mesin 1 Liter", 1, 55000),
-        ("jasa", "Ganti rantai dan gear", 1, 50000),
-        ("produk", "Kampas Rem Depan", 1, 45000),
+        ("jasa", "Servis CVT", 1, 50000),
+        ("jasa", "Ganti V-belt", 1, 35000),
     ]
     assert set(isi["terlaris"][0]) == {"tipe", "id", "nama", "jumlah", "total"}
 
 
 def test_draft_tidak_masuk_laporan(klien):
     isi = lapor(klien, "2026-10-24", "2026-10-24").json()
-    assert isi["jumlah_transaksi"] == 1 and isi["total_penjualan"] == 135000
+    assert isi["jumlah_transaksi"] == 1 and isi["total_penjualan"] == 110000
 
 
 def test_satu_hari_dan_hari_kosong(klien):
     satu = lapor(klien, "2026-10-23", "2026-10-23").json()
-    assert satu["total_penjualan"] == 595000 and satu["jumlah_transaksi"] == 2 and satu["rata_rata"] == 297500
+    assert satu["total_penjualan"] == 465000 and satu["jumlah_transaksi"] == 2 and satu["rata_rata"] == 232500
     kosong = lapor(klien, "2026-10-01", "2026-10-22").json()
     assert kosong["total_penjualan"] == 0 and kosong["jumlah_transaksi"] == 0 and kosong["rata_rata"] == 0
     assert kosong["penjualan_per_hari"] == [] and kosong["terlaris"] == []
@@ -126,7 +126,7 @@ def test_angka_laporan_cocok_dengan_database(klien):
         assert (item["jumlah"], item["total"]) == (jml, nilai), item
     jumlah_terjual = [t["jumlah"] for t in isi["terlaris"]]
     assert jumlah_terjual == sorted(jumlah_terjual, reverse=True)
-    assert isi["terlaris"][0]["nama"] == "Ganti busi" and isi["terlaris"][0]["jumlah"] == 5
+    assert isi["terlaris"][0]["nama"] == "Ganti busi" and isi["terlaris"][0]["jumlah"] == 6  # 3 + 2 dari tes ini + 1 dari TRX-0104 data awal
 
 
 def test_terlaris_maksimal_lima_dan_gabungan_produk_jasa(klien):

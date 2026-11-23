@@ -16,21 +16,43 @@ untuk masukan yang sama.
 import hashlib
 import math
 
-KODE_GEJALA = tuple(f"G{n:02d}" for n in range(1, 19))
-KODE_KERUSAKAN = tuple(f"K{n:02d}" for n in range(1, 11))
+KODE_GEJALA = tuple(f"G{n:02d}" for n in range(1, 32))
+KODE_KERUSAKAN = tuple(f"K{n}" for n in range(1, 10))
 
 # kerusakan -> {gejala: kekuatan hubungan 0..1}
+# Disusun berdasarkan hubungan logis gejala-kerusakan untuk motor injeksi/matic
+# Bobot TIRUAN, bukan hasil pelatihan. Ganti dengan model RF asli setelah B-11 selesai.
 BOBOT: dict[str, dict[str, float]] = {
-    "K01": {"G01": 0.9, "G03": 0.7, "G04": 0.5, "G09": 0.6, "G18": 0.7, "G02": 0.3, "G05": 0.3},
-    "K02": {"G01": 0.6, "G03": 0.6, "G05": 0.9, "G09": 0.8, "G18": 0.9, "G02": 0.5, "G04": 0.3},
-    "K03": {"G01": 0.5, "G07": 1.0, "G08": 1.0, "G16": 1.0},
-    "K04": {"G10": 1.0},
-    "K05": {"G12": 1.0, "G03": 0.4, "G09": 0.2},
-    "K06": {"G11": 1.0, "G13": 0.6, "G03": 0.3},
-    "K07": {"G03": 0.6, "G05": 0.7, "G09": 0.7, "G18": 0.4, "G06": 0.2},
-    "K08": {"G17": 1.0, "G15": 0.9, "G06": 0.8, "G14": 0.8, "G04": 0.4},
-    "K09": {"G02": 0.9, "G01": 0.6, "G18": 0.6},
-    "K10": {"G01": 0.7, "G02": 0.6, "G03": 0.5, "G18": 0.5},
+    "K1": {  # Busi lemah/kotor
+        "G01": 0.9, "G02": 0.7, "G03": 0.8, "G04": 0.5, "G05": 0.6,
+        "G06": 0.5, "G07": 0.6, "G19": 1.0, "G20": 0.5, "G26": 0.4,
+    },
+    "K2": {  # V-belt aus/mulur
+        "G04": 0.7, "G09": 0.9, "G10": 0.7, "G12": 0.8, "G13": 0.9, "G30": 1.0,
+    },
+    "K3": {  # Roller CVT aus/peyang
+        "G04": 0.6, "G10": 0.9, "G12": 0.9, "G13": 0.8, "G31": 1.0,
+    },
+    "K4": {  # Per CVT lemah
+        "G04": 0.7, "G11": 0.9, "G12": 0.7, "G13": 0.7,
+    },
+    "K5": {  # Dinamo starter/bendik bermasalah
+        "G14": 1.0, "G15": 0.8, "G16": 0.9, "G18": 0.6,
+    },
+    "K6": {  # Aki lemah
+        "G14": 0.7, "G15": 0.9, "G16": 0.6, "G17": 1.0,
+    },
+    "K7": {  # Kompresi bocor
+        "G01": 0.7, "G08": 0.6, "G21": 0.9, "G22": 0.9, "G23": 0.7,
+        "G24": 1.0, "G25": 0.8,
+    },
+    "K8": {  # Fuel pump lemah
+        "G01": 0.6, "G02": 0.7, "G05": 0.8, "G08": 0.9, "G25": 0.7, "G26": 0.8,
+    },
+    "K9": {  # Injektor/throttle body kotor
+        "G03": 0.7, "G04": 0.6, "G05": 0.7, "G06": 0.6, "G07": 0.9,
+        "G26": 0.7, "G27": 0.8, "G28": 0.6, "G29": 0.7,
+    },
 }
 
 

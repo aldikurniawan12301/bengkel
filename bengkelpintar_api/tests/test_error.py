@@ -98,7 +98,7 @@ def test_error_domain_tetap_seragam_dan_header_401_terjaga(klien):
     for res in (
         klien.get("/laporan/penjualan?periode_mulai=2026-10-24&periode_selesai=2026-10-23", headers=adm(klien)),
         klien.get("/transaksi/999", headers=adm(klien)),
-        klien.post("/produk/10/stok", json={"jumlah": -1, "alasan": "x"}, headers=adm(klien)),
+        klien.post("/produk/10/stok", json={"jumlah": -1000, "alasan": "x"}, headers=adm(klien)),
         klien.get("/pengguna", headers=header(token_bawaan(klien, "budi"))),
         masuk(klien, "admin", "salah"),
     ):

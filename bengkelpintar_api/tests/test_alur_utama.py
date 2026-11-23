@@ -25,7 +25,7 @@ def test_alur_utama_bengkel(klien):
 
     # 3. mekanik mendiagnosis dan hasilnya tersimpan di riwayatnya
     hasil = klien.post("/diagnosis/predict", json={"gejala_ids": [1, 3, 4]}, headers=budi).json()
-    assert hasil["kerusakan_utama"]["nama"] == "Busi kotor / aus"
+    assert hasil["kerusakan_utama"]["nama"] == "Busi lemah/kotor"
     assert [r["id"] for r in klien.get("/diagnosis/riwayat", headers=budi).json()] == [hasil["riwayat_id"]]
 
     # 4. mekanik membuat draft dari hasil diagnosis lalu mengubahnya
@@ -88,7 +88,7 @@ def test_alur_utama_bengkel(klien):
 
     # 9. statistik diagnosis dan pembukuan stok tetap konsisten
     stat = klien.get("/diagnosis/statistik", headers=admin).json()
-    assert stat["total"] == 1 and stat["items"][0]["nama"] == "Busi kotor / aus"
+    assert stat["total"] == 1 and stat["items"][0]["nama"] == "Busi lemah/kotor"
     with klien.mesin.connect() as c:
         selisih = c.execute(text(
             "SELECT p.id FROM produk p LEFT JOIN mutasi_stok m ON m.produk_id = p.id "

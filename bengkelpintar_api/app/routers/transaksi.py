@@ -142,7 +142,6 @@ def daftar_transaksi(
             or_(
                 Transaksi.nomor.ilike(pola, escape="\\"),
                 Transaksi.nama_pelanggan.ilike(pola, escape="\\"),
-                Transaksi.plat_nomor.ilike(pola, escape="\\"),
             )
         )
     return [_keluar(t) for t in db.scalars(kueri).all()]

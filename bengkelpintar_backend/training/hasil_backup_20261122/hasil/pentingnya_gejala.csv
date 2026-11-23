@@ -1,0 +1,19 @@
+gejala,uraian,kepentingan
+G01,Mesin susah dihidupkan,0.088543
+G05,Knalpot berasap hitam,0.079002
+G04,Knalpot berasap putih,0.076028
+G02,Mesin mati mendadak,0.073278
+G18,Putaran gas tidak stabil,0.067399
+G03,Tarikan berat,0.067007
+G09,Boros bensin,0.066721
+G11,Rantai berisik,0.058917
+G06,Suara mesin kasar,0.053723
+G10,Rem kurang pakem,0.051139
+G12,Kopling selip,0.046894
+G13,Getaran berlebih di stang,0.044751
+G14,Mesin overheat,0.043993
+G15,Bunyi ketukan di mesin,0.040726
+G17,Oli cepat habis,0.037878
+G16,Starter elektrik tidak berfungsi,0.037281
+G07,Lampu redup,0.035807
+G08,Klakson lemah atau mati,0.030913

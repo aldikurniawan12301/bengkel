@@ -1,11 +1,10 @@
 kelas,nama,jumlah
-K01,Busi kotor / aus,62
-K02,Karburator kotor,83
-K03,Aki lemah,23
-K04,Kampas rem aus,34
-K05,Kampas kopling aus,31
-K06,Rantai dan gear aus,31
-K07,Filter udara kotor,58
-K08,Oli mesin habis atau kotor,35
-K09,CDI bermasalah,31
-K10,Koil pengapian lemah,88
+K1,Busi lemah/kotor,120
+K2,V-belt aus/mulur,119
+K3,Roller CVT aus/peyang,117
+K4,Per CVT lemah (sumber terbatas),118
+K5,Dinamo starter/bendik bermasalah,118
+K6,Aki lemah,119
+K7,Kompresi bocor (ring piston/klep/seal klep),119
+K8,Pompa bensin (fuel pump) lemah,120
+K9,Injektor/throttle body kotor,120

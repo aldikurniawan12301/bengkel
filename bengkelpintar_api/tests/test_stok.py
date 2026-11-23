@@ -93,7 +93,10 @@ def test_stok_tidak_boleh_negatif_dan_tidak_meninggalkan_jejak(klien):
 
 
 def test_produk_stok_nol_tidak_bisa_dikurangi(klien):
-    res = klien.post("/produk/10/stok", json={"jumlah": -1, "alasan": "x"}, headers=adm(klien))
+    h = adm(klien)
+    baru = klien.post("/produk", json={"nama": "Produk Stok Nol", "kategori_id": 1, "harga": 1000, "stok": 0, "stok_minimum": 1}, headers=h)
+    assert baru.status_code == 201
+    res = klien.post(f"/produk/{baru.json()['id']}/stok", json={"jumlah": -1, "alasan": "x"}, headers=h)
     assert res.status_code == 409
 
 
@@ -143,7 +146,10 @@ def test_filter_stok_menipis_dan_habis(klien):
     menipis = klien.get("/produk", params={"stok": "menipis"}, headers=h).json()
     habis = klien.get("/produk", params={"stok": "habis"}, headers=h).json()
     assert sorted(p["nama"] for p in menipis) == ["Busi NGK Standar", "CDI"]
-    assert [p["nama"] for p in habis] == ["Kampas Rem Belakang"]
+    assert habis == []
+    klien.post("/produk", json={"nama": "Produk Stok Nol", "kategori_id": 1, "harga": 1000, "stok": 0, "stok_minimum": 1}, headers=h)
+    habis = klien.get("/produk", params={"stok": "habis"}, headers=h).json()
+    assert [p["nama"] for p in habis] == ["Produk Stok Nol"]
     assert klien.get("/produk", params={"stok": "aneh"}, headers=h).status_code == 422
     klien.post("/produk/1/stok", json={"jumlah": 10, "alasan": "masuk"}, headers=h)
     menipis = klien.get("/produk", params={"stok": "menipis"}, headers=h).json()

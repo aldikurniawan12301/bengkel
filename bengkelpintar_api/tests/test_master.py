@@ -53,7 +53,7 @@ def test_tanpa_token_ditolak_di_semua_master(klien):
 # --------------------------------------------------------------- kategori
 def test_kategori_daftar_cari_tambah(klien):
     h = adm(klien)
-    assert len(klien.get("/kategori", headers=h).json()) == 6
+    assert len(klien.get("/kategori", headers=h).json()) == 8
     hasil = klien.get("/kategori", params={"q": "PELUM"}, headers=h).json()
     assert [k["nama"] for k in hasil] == ["Pelumas"]
     res = klien.post("/kategori", json={"nama": "  Aksesoris  "}, headers=h)
@@ -96,7 +96,7 @@ def test_produk_daftar_memuat_nonaktif_dan_nama_kategori(klien):
     h = adm(klien)
     klien.put("/produk/1", json={"nama": "Busi NGK Standar", "kategori_id": 1, "harga": 25000, "stok_minimum": 5, "aktif": False}, headers=h)
     semua = klien.get("/produk", headers=h).json()
-    assert len(semua) == 12
+    assert len(semua) == 17
     p1 = next(p for p in semua if p["id"] == 1)
     assert p1["aktif"] is False and p1["kategori_nama"]
 
@@ -174,7 +174,7 @@ def test_produk_cari_dan_tidak_ditemukan(klien):
 # ------------------------------------------------------------------- jasa
 def test_jasa_tambah_ubah_nonaktif_duplikat(klien):
     h = adm(klien)
-    assert len(klien.get("/jasa", headers=h).json()) == 9
+    assert len(klien.get("/jasa", headers=h).json()) == 11
     baru = klien.post("/jasa", json={"nama": "Servis AC", "harga": 150000}, headers=h)
     assert baru.status_code == 201
     jid = baru.json()["id"]
@@ -208,7 +208,7 @@ def test_gejala_kode_tidak_bisa_diubah(klien):
 # -------------------------------------------------------------- kerusakan
 def test_kerusakan_k01_memuat_penautan(klien):
     k = klien.get("/kerusakan", headers=adm(klien)).json()[0]
-    assert k["kode"] == "K01"
+    assert k["kode"] == "K1"
     assert [c["nama"] for c in k["komponen_terkait"]] == ["Busi NGK Standar", "Kabel Busi"]
     assert [j["nama"] for j in k["jasa_terkait"]] == ["Ganti busi"]
     assert set(k["komponen_terkait"][0]) == {"produk_id", "nama", "harga"}

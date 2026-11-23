@@ -59,28 +59,28 @@ def test_matriks_bobot_konsisten_dengan_daftar_gejala_dan_kelas():
 
 @pytest.mark.parametrize(
     "gejala, kelas",
-    [(["G10"], "K04"), (["G12"], "K05"), (["G11"], "K06"), (["G17"], "K08"), (["G07"], "K03"), (["G16"], "K03"), (["G05", "G09", "G18"], "K02")],
+    [(["G09"], "K2"), (["G12"], "K3"), (["G11"], "K4"), (["G17"], "K6"), (["G07"], "K9"), (["G16"], "K5"), (["G05", "G08"], "K8")],
 )
 def test_gejala_spesifik_menunjuk_kelas_yang_sesuai(gejala, kelas):
     assert peringkat(*gejala)[0][0] == kelas
 
 
-def test_contoh_prd_kerusakan_utama_k01_lalu_k02():
+def test_contoh_prd_kerusakan_utama_k1_lalu_k9():
     urutan = [k for k, _ in peringkat("G01", "G03", "G04")]
-    assert urutan[:2] == ["K01", "K02"]
+    assert urutan[:2] == ["K1", "K9"]
 
 
 def test_bukti_bertambah_keyakinan_naik():
-    satu = dict(peringkat("G07"))["K03"]
-    tiga = dict(peringkat("G07", "G08", "G16"))["K03"]
+    satu = dict(peringkat("G07"))["K9"]
+    tiga = dict(peringkat("G07", "G26", "G27"))["K9"]
     assert tiga > satu
 
 
 def test_gejala_bertentangan_membagi_probabilitas():
-    sendiri = peringkat("G10")[0][1]
-    bertentangan = peringkat("G10", "G12")
+    sendiri = peringkat("G09")[0][1]
+    bertentangan = peringkat("G09", "G14")
     assert bertentangan[0][1] < sendiri
-    assert {bertentangan[0][0], bertentangan[1][0]} == {"K04", "K05"}
+    assert {bertentangan[0][0], bertentangan[1][0]} == {"K2", "K5"}
 
 
 # --------------------------------------------------------------------- API
@@ -107,7 +107,7 @@ def test_contoh_prd_9_3_bentuk_respons(klien):
     assert set(h) == KUNCI_PRD
     assert isinstance(h["riwayat_id"], int)
     assert set(h["kerusakan_utama"]) == {"id", "nama", "keyakinan"}
-    assert (h["kerusakan_utama"]["id"], h["kerusakan_utama"]["nama"]) == (1, "Busi kotor / aus")
+    assert (h["kerusakan_utama"]["id"], h["kerusakan_utama"]["nama"]) == (1, "Busi lemah/kotor")
     assert isinstance(h["kerusakan_utama"]["keyakinan"], float)
     assert 1 <= len(h["kemungkinan_lain"]) <= 2
     assert all(set(k) == {"id", "nama", "keyakinan"} for k in h["kemungkinan_lain"])
@@ -181,12 +181,12 @@ def test_riwayat_menyimpan_salinan_gejala_walau_gejala_diganti_nama(klien):
     g = klien.get("/gejala", headers=admin).json()[0]
     klien.put(f"/gejala/{g['id']}", json={"nama": "Nama baru", "kategori": g["kategori"], "aktif": True}, headers=admin)
     r = klien.get("/diagnosis/riwayat", headers=budi(klien)).json()[0]
-    assert r["gejala"][0]["nama"] == "Mesin susah dihidupkan"
+    assert r["gejala"][0]["nama"] == "Mesin sulit dihidupkan"
 
 
 def test_riwayat_mekanik_hanya_miliknya_admin_semua(klien):
-    a = prediksi(klien, [10], h=budi(klien)).json()
-    b = prediksi(klien, [12], h=rina(klien)).json()
+    a = prediksi(klien, [9], h=budi(klien)).json()  # G09 - CVT
+    b = prediksi(klien, [14], h=rina(klien)).json()  # G14 - starter
     assert [r["id"] for r in klien.get("/diagnosis/riwayat", headers=budi(klien)).json()] == [a["riwayat_id"]]
     assert [r["id"] for r in klien.get("/diagnosis/riwayat", headers=rina(klien)).json()] == [b["riwayat_id"]]
     semua = klien.get("/diagnosis/riwayat", headers=adm(klien)).json()
@@ -216,11 +216,11 @@ def test_gejala_nonaktif_ditolak(klien):
 
 def test_gejala_baru_yang_tidak_dikenal_model_diabaikan(klien):
     admin = adm(klien)
-    baru = klien.post("/gejala", json={"kode": "G19", "nama": "Bunyi baru", "kategori": "Mesin"}, headers=admin).json()
+    baru = klien.post("/gejala", json={"kode": "G32", "nama": "Bunyi baru", "kategori": "Mesin"}, headers=admin).json()
     sendiri = prediksi(klien, [baru["id"]])
     assert sendiri.status_code == 400 and "belum dikenali" in sendiri.json()["detail"]
-    campur = prediksi(klien, [baru["id"], 10]).json()
-    murni = prediksi(klien, [10]).json()
+    campur = prediksi(klien, [baru["id"], 9]).json()
+    murni = prediksi(klien, [9]).json()
     assert campur["kerusakan_utama"] == murni["kerusakan_utama"]
     assert campur["kemungkinan_lain"] == murni["kemungkinan_lain"]
 
@@ -235,9 +235,9 @@ def test_kerusakan_nonaktif_dikeluarkan_dan_probabilitas_dinormalkan(klien):
     )
     h = prediksi(klien, CONTOH_PRD).json()
     nama = [h["kerusakan_utama"]["nama"]] + [k["nama"] for k in h["kemungkinan_lain"]]
-    assert "Busi kotor / aus" not in nama and h["kerusakan_utama"]["nama"] == "Karburator kotor"
+    assert "Busi lemah/kotor" not in nama and h["kerusakan_utama"]["nama"] == "Injektor/throttle body kotor"
     p = dict(zip(at.KODE_KERUSAKAN, ambil_pengklasifikasi().predict_proba(vektor("G01", "G03", "G04"))))
-    assert h["kerusakan_utama"]["keyakinan"] == round(p["K02"] / (1 - p["K01"]), 2)
+    assert h["kerusakan_utama"]["keyakinan"] == round(p["K9"] / (1 - p["K1"]), 2)
     total = h["kerusakan_utama"]["keyakinan"] + sum(k["keyakinan"] for k in h["kemungkinan_lain"])
     assert total <= 1.01
 
@@ -255,10 +255,10 @@ def test_hasil_bisa_dipakai_untuk_draft_transaksi(klien):
 def test_statistik_membaca_riwayat_nyata(klien):
     prediksi(klien, CONTOH_PRD)
     prediksi(klien, CONTOH_PRD)
-    prediksi(klien, [10])
+    prediksi(klien, [9])  # G09 -> K2 (V-belt)
     isi = klien.get("/diagnosis/statistik", headers=adm(klien)).json()
     assert isi["total"] == 3
-    assert [(i["nama"], i["jumlah"]) for i in isi["items"]] == [("Busi kotor / aus", 2), ("Kampas rem aus", 1)]
+    assert [(i["nama"], i["jumlah"]) for i in isi["items"]] == [("Busi lemah/kotor", 2), ("V-belt aus/mulur", 1)]
     assert isi["items"][0]["persentase"] == pytest.approx(2 / 3)
 
 
@@ -268,7 +268,7 @@ def test_pengklasifikasi_bisa_diganti_tanpa_mengubah_bentuk_respons(klien):
         kode_kerusakan = at.KODE_KERUSAKAN
 
         def predict_proba(self, v):
-            return [0.9 if k == "K04" else (0.1 if k == "K05" else 0.0) for k in self.kode_kerusakan]
+            return [0.9 if k == "K2" else (0.1 if k == "K3" else 0.0) for k in self.kode_kerusakan]
 
     app.dependency_overrides[ambil_pengklasifikasi] = lambda: Palsu()
     try:
@@ -276,8 +276,8 @@ def test_pengklasifikasi_bisa_diganti_tanpa_mengubah_bentuk_respons(klien):
     finally:
         app.dependency_overrides.pop(ambil_pengklasifikasi, None)
     assert set(h) == KUNCI_PRD
-    assert h["kerusakan_utama"] == {"id": 4, "nama": "Kampas rem aus", "keyakinan": 0.9}
-    assert h["kemungkinan_lain"][0]["nama"] == "Kampas kopling aus"
+    assert h["kerusakan_utama"] == {"id": 2, "nama": "V-belt aus/mulur", "keyakinan": 0.9}
+    assert h["kemungkinan_lain"][0]["nama"] == "Roller CVT aus/peyang"
     assert h["urgensi"] == "tinggi"
 
 

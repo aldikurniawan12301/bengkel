@@ -31,11 +31,11 @@ def test_jumlah_data_awal(mesin):
     with Session(mesin) as s:
         assert hitung(s, m.PengaturanBengkel) == 1
         assert hitung(s, m.Pengguna) == 3
-        assert hitung(s, m.Kategori) == 6
-        assert hitung(s, m.Produk) == 12
-        assert hitung(s, m.Jasa) == 9
-        assert hitung(s, m.Gejala) == 18
-        assert hitung(s, m.Kerusakan) == 10
+        assert hitung(s, m.Kategori) == 8
+        assert hitung(s, m.Produk) == 17
+        assert hitung(s, m.Jasa) == 11
+        assert hitung(s, m.Gejala) == 31
+        assert hitung(s, m.Kerusakan) == 9
         assert hitung(s, m.Transaksi) == 4
 
 
@@ -51,8 +51,8 @@ def test_seed_ulang_tanpa_duplikasi(mesin):
 def test_total_transaksi_contoh(mesin):
     harapan = {
         "TRX-0105": 45000,
-        "TRX-0104": 135000,
-        "TRX-0103": 300000,
+        "TRX-0104": 110000,
+        "TRX-0103": 170000,
         "TRX-0102": 295000,
     }
     with Session(mesin) as s:
@@ -89,12 +89,12 @@ def test_stok_menipis_dan_habis(mesin):
         ).all()
         habis = s.scalars(select(m.Produk.nama).where(m.Produk.stok == 0)).all()
     assert sorted(menipis) == ["Busi NGK Standar", "CDI"]
-    assert habis == ["Kampas Rem Belakang"]
+    assert habis == []  # tidak ada produk berstok nol di data awal
 
 
 def test_penautan_kerusakan_k01(mesin):
     with Session(mesin) as s:
-        k = s.scalar(select(m.Kerusakan).where(m.Kerusakan.kode == "K01"))
+        k = s.scalar(select(m.Kerusakan).where(m.Kerusakan.kode == "K1"))
         assert sorted(p.nama for p in k.komponen) == ["Busi NGK Standar", "Kabel Busi"]
         assert [j.nama for j in k.jasa] == ["Ganti busi"]
 

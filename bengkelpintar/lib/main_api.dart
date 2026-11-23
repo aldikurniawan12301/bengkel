@@ -24,14 +24,25 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 /// Untuk mode mock, gunakan main.dart.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AppSystemUi.configure();
+  debugPrint('[BP] 1 sebelum configure');
+  try {
+    await AppSystemUi.configure().timeout(const Duration(seconds: 3));
+  } catch (e) {
+    debugPrint('[BP] configure gagal/timeout: $e');
+  }
+  debugPrint('[BP] 2 sebelum runApp');
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  static final Future<ServerConfig> _serverConfig = ServerConfig.load();
+  static final Future<ServerConfig> _serverConfig = () async {
+    debugPrint('[BP] 3 ServerConfig.load mulai');
+    final c = await ServerConfig.load();
+    debugPrint('[BP] 4 ServerConfig.load selesai');
+    return c;
+  }();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +54,11 @@ class MyApp extends StatelessWidget {
           final roleProvider = context.read<RoleProvider>();
           final config = configSnapshot.data;
           if (config == null) {
-            return _app(roleProvider, const SplashScreen(checkSession: false));
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.light,
+              home: const SplashScreen(checkSession: false),
+            );
           }
 
           return MultiProvider(
